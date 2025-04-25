@@ -1,4 +1,3 @@
-
 class StorageService {
   static setAccessToken(token: string) {
     localStorage.setItem("token", token);

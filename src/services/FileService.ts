@@ -5,7 +5,7 @@ class FileService extends ApiService {
     super('file');
   }
 
-  download(userId: any, fileIds: any) {
+  download(userId: unknown, fileIds: unknown) {
     const payload = {
       userId,
       fileIds,

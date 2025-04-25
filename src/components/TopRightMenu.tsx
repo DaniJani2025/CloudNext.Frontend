@@ -14,7 +14,7 @@ const TopRightMenu = () => {
         setUserDisplayName(displayName || 'Guest');
     }, []);
 
-    const handleMenuOpen = (event) => {
+    const handleMenuOpen = (event: { currentTarget: React.SetStateAction<null>; }) => {
         setAnchorEl(event.currentTarget);
     };
 

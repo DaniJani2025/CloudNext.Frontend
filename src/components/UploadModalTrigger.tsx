@@ -11,16 +11,17 @@ import {
 } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
+import { UserFile } from '../types/types';
 
 export default function UploadModalTrigger() {
   const [open, setOpen] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UserFile[]>([]);
 
-  const handleFiles = (files) => {
+  const handleFiles = (files: Iterable<UserFile> | ArrayLike<UserFile>) => {
     setUploadedFiles(Array.from(files));
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: { preventDefault: () => void; stopPropagation: () => void; dataTransfer: { files: Iterable<UserFile> | ArrayLike<UserFile>; }; }) => {
     e.preventDefault();
     e.stopPropagation();
     if (e.dataTransfer.files) {
@@ -28,7 +29,7 @@ export default function UploadModalTrigger() {
     }
   };
 
-  const handleFileInputChange = (e) => {
+  const handleFileInputChange = (e: { target: { files: Iterable<UserFile> | ArrayLike<UserFile>; }; }) => {
     if (e.target.files) {
       handleFiles(e.target.files);
     }
@@ -55,7 +56,7 @@ export default function UploadModalTrigger() {
         <DialogContent>
           <Box
             onDrop={handleDrop}
-            onDragOver={(e) => e.preventDefault()}
+            onDragOver={(e: { preventDefault: () => unknown; }) => e.preventDefault()}
             sx={{
               border: '2px dashed #1976d2',
               borderRadius: 2,
@@ -89,7 +90,7 @@ export default function UploadModalTrigger() {
           {uploadedFiles.length > 0 && (
             <Box mt={2}>
               <Typography variant="subtitle1">Selected Files:</Typography>
-              {uploadedFiles.slice(0, 3).map((file, idx) => (
+              {uploadedFiles.slice(0, 3).map((file: UserFile, idx) => (
                 <Typography key={idx} variant="body2">
                   • {file.name}
                 </Typography>
