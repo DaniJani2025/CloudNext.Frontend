@@ -36,9 +36,13 @@ export default function UploadModalTrigger() {
 
   return (
     <>
-      <IconButton onClick={() => setOpen(true)} color="primary">
-        <UploadIcon />
-      </IconButton>
+      <Button
+        variant="outlined"
+        startIcon={<UploadIcon />}
+        onClick={() => setOpen(true)}
+      >
+        Upload
+      </Button>
 
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>
