@@ -5,6 +5,8 @@ import StorageService from '../services/StorageService';
 import FolderService from '../services/FolderService';
 import FileService from '../services/FileService';
 import FolderSidebar from '../components/FolderSidebar';
+import DownloadIcon from '@mui/icons-material/Download';
+import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 
 export default function HomePage() {
   const [folders, setFolders] = useState([]);
@@ -178,8 +180,12 @@ export default function HomePage() {
           <img src={fullscreenImage} alt="Fullscreen Image" style={{ maxWidth: '100%', maxHeight: '80vh' }} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDownload} color="primary">Download</Button>
-          <Button onClick={handleCloseFullscreen} color="secondary">Minimize</Button>
+          <Button onClick={handleDownload} color="primary">
+            <DownloadIcon />
+          </Button>
+          <Button onClick={handleCloseFullscreen} color="secondary">
+            <CloseFullscreenIcon />
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
