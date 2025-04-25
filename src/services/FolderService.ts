@@ -5,6 +5,11 @@ class FolderService extends ApiService {
     super('folder');
   }
 
+  getStructure(userId: string) {
+    const url = `structure?userId=${userId}`
+    return this.get(url);
+  }
+
   getAll(userId: string, folderId?: string) {
     let url = `GetAll?userId=${userId}`;
     if (folderId) {
