@@ -40,6 +40,9 @@ export default function HomePage() {
   }, []);
 
   const handleFolderClick = (folderId) => {
+    setSelectedFiles([]);
+    setSelectedFolders([]);
+
     setFolderHistory((prev) => [...prev, folderId]);
     loadFolderContents(folderId);
   };
@@ -94,7 +97,7 @@ export default function HomePage() {
         ? prev.filter(id => id !== folderId)
         : [...prev, folderId]
     );
-  };  
+  };
 
   return (
     <div>
