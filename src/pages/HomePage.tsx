@@ -7,6 +7,9 @@ import FileService from '../services/FileService';
 import FolderSidebar from '../components/FolderSidebar';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
+import UploadModalTrigger from '../components/UploadModalTrigger';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+import SortIcon from '@mui/icons-material/Sort';
 
 export default function HomePage() {
   const [folders, setFolders] = useState([]);
@@ -17,7 +20,6 @@ export default function HomePage() {
   const [openFullscreen, setOpenFullscreen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [selectedFolders, setSelectedFolders] = useState([]);
-
 
   const userId = StorageService.getCurrentUser();
 
@@ -96,11 +98,23 @@ export default function HomePage() {
 
   return (
     <div>
-      <Box display="flex" alignItems="center" mb={2}>
-        <IconButton onClick={handleBackClick} disabled={folderHistory.length === 0}>
-          <ArrowBack />
-        </IconButton>
-        <Typography variant="h5" ml={1}>Home Page</Typography>
+      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+        <Box display="flex" alignItems="center">
+          <IconButton onClick={handleBackClick} disabled={folderHistory.length === 0}>
+            <ArrowBack />
+          </IconButton>
+          <Typography variant="h5" ml={1}>Drive</Typography>
+        </Box>
+
+        <Box display="flex" alignItems="center" gap={2} sx={{ marginRight: '60px' }}>
+          <UploadModalTrigger />
+          <Button variant="outlined" startIcon={<CreateNewFolderIcon />}>
+            New Folder
+          </Button>
+          <Button variant="outlined" startIcon={<SortIcon />}>
+            Sort
+          </Button>
+        </Box>
       </Box>
 
       <Box display="flex">
