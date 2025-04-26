@@ -1,31 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import FolderService from '../services/FolderService';
-import { Box, Button, Collapse, List, ListItem, ListItemText, IconButton } from '@mui/material';
+import { Box, Collapse, List, ListItem, ListItemText, IconButton } from '@mui/material';
 import { Folder, ArrowForward, ArrowDownward } from '@mui/icons-material';
+import { UserFolder } from '../types/types';
+import StorageService from '../services/StorageService';
 
-const FolderSidebar = ({ userId, onFolderClick }) => {
-  const [folderStructure, setFolderStructure] = useState([]);
-  const [expandedFolders, setExpandedFolders] = useState([]);
+interface FolderSidebarProps {
+  userId: string;
+  onFolderClick: (folderId: string) => void;
+  refreshTrigger: boolean;
+}
 
-  useEffect(() => {
+const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
+  const { userId, onFolderClick, refreshTrigger } = props;
+  const [folderStructure, setFolderStructure] = useState<UserFolder[]>([]);
+  const [expandedFolders, setExpandedFolders] = useState<string[]>([]);
+
+  const loadFolderStructure = () => {
     if (userId) {
       FolderService.getStructure(userId)
         .then((data) => {
           if (Array.isArray(data.subFolders)) {
             setFolderStructure(data.subFolders);
+            StorageService.setUserFolder(data.folderId);
           } else {
             console.error('Expected subFolders to be an array.');
           }
         })
         .catch((error) => console.error('Failed to fetch folder structure:', error));
     }
+  };
+
+  useEffect(() => {
+    loadFolderStructure();
   }, [userId]);
 
-  const handleFolderClick = (folderId) => {
+  useEffect(() => {
+    loadFolderStructure();
+  }, [refreshTrigger]);
+
+  const handleFolderClick = (folderId: string) => {
     onFolderClick(folderId);
   };
 
-  const handleToggleCollapse = (folderId) => {
+  const handleToggleCollapse = (folderId: string) => {
     setExpandedFolders((prevExpanded) =>
       prevExpanded.includes(folderId)
         ? prevExpanded.filter((id) => id !== folderId)
@@ -37,7 +55,7 @@ const FolderSidebar = ({ userId, onFolderClick }) => {
     <Box sx={{ width: 250, borderRight: '1px solid #ccc', padding: 2 }}>
       <List>
         {folderStructure.length > 0 ? (
-          folderStructure.map((folder) => (
+          folderStructure.map((folder: UserFolder) => (
             <div key={folder.folderId}>
               <ListItem button onClick={() => handleFolderClick(folder.folderId)}>
                 <Folder sx={{ marginRight: 1 }} />

@@ -5,6 +5,10 @@ class FolderService extends ApiService {
     super('folder');
   }
 
+  async upload(userId: string, parentFolderId: string | null, zipFile: Blob) {
+    return this.uploadFolder('/upload', userId, parentFolderId, zipFile);
+  }
+
   getStructure(userId: string) {
     const url = `structure?userId=${userId}`
     return this.get(url);

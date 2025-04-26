@@ -1,4 +1,3 @@
-
 class StorageService {
   static setAccessToken(token: string) {
     localStorage.setItem("token", token);
@@ -50,6 +49,14 @@ class StorageService {
 
   static getTokenExpiry(): string | null {
     return localStorage.getItem("expiresAt");
+  }
+
+  static setUserFolder(parentFolderId: string) {
+    return localStorage.setItem("parentFolderId", parentFolderId);
+  }
+
+  static getUserFolder(): string | null {
+    return localStorage.getItem("parentFolderId");
   }
 
   static removeUserDetails() {

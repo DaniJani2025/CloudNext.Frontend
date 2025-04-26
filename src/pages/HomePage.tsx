@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Folder, ArrowBack } from '@mui/icons-material';
 import { Box, Typography, Card, CardMedia, IconButton, Dialog, DialogActions, DialogContent, Button } from '@mui/material';
 import StorageService from '../services/StorageService';
@@ -7,28 +7,37 @@ import FileService from '../services/FileService';
 import FolderSidebar from '../components/FolderSidebar';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
+import UploadModalTrigger from '../components/UploadModalTrigger';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+import SortIcon from '@mui/icons-material/Sort';
+import { UserFile, UserFolder } from '../types/types';
 
 export default function HomePage() {
-  const [folders, setFolders] = useState([]);
-  const [files, setFiles] = useState([]);
-  const [folderHistory, setFolderHistory] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [fullscreenImage, setFullscreenImage] = useState(null);
-  const [openFullscreen, setOpenFullscreen] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [selectedFolders, setSelectedFolders] = useState([]);
-
+  const [folders, setFolders] = useState<UserFolder[]>([]);
+  const [files, setFiles] = useState<UserFile[]>([]);
+  const [folderHistory, setFolderHistory] = useState<string[]>([]);
+  const [selectedFile, setSelectedFile] = useState<UserFile | null>(null);
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+  const [openFullscreen, setOpenFullscreen] = useState<boolean>(false);
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
+  const [refreshSidebar, setRefreshSidebar] = useState(false);
 
   const userId = StorageService.getCurrentUser();
 
-  const loadFolderContents = (folderId) => {
+  const loadFolderContents = (folderId: string | null) => {
     if (!userId) return;
 
-    FolderService.getAll(userId, folderId)
+    const validFolderId = folderId === null ? undefined : folderId;
+
+    setSelectedFolders([]);
+    setSelectedFiles([]);
+
+    FolderService.getAll(userId, validFolderId)
       .then(setFolders)
       .catch((error) => console.error('Failed to fetch folders:', error));
-
-    FileService.getAll(userId, folderId)
+  
+    FileService.getAll(userId, validFolderId)
       .then(setFiles)
       .catch((error) => console.error('Failed to fetch files:', error));
   };
@@ -37,7 +46,7 @@ export default function HomePage() {
     loadFolderContents(null);
   }, []);
 
-  const handleFolderClick = (folderId) => {
+  const handleFolderClick = (folderId: string) => {
     setFolderHistory((prev) => [...prev, folderId]);
     loadFolderContents(folderId);
   };
@@ -52,23 +61,25 @@ export default function HomePage() {
     });
   };
 
-  const handleFileClick = (file) => {
+  const handleFileClick = (file: UserFile) => {
     FileService.download(userId, [file.fileId])
-    .then((response) => {
-      const blob = new Blob([response], { type: file.contentType });
-      const url = URL.createObjectURL(blob);
-      setFullscreenImage(url);
-      setSelectedFile(file);
-      setOpenFullscreen(true);
-    })
-    .catch((error) => console.error('Failed to fetch file:', error));  
+      .then((response) => {
+        const blob = new Blob([response], { type: file.contentType });
+        const url = URL.createObjectURL(blob);
+        setFullscreenImage(url);
+        setSelectedFile(file);
+        setOpenFullscreen(true);
+      })
+      .catch((error) => console.error('Failed to fetch file:', error));
   };
 
   const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = fullscreenImage;
-    link.download = selectedFile.originalName;
-    link.click();
+    if (selectedFile && fullscreenImage) {
+      const link = document.createElement('a');
+      link.href = fullscreenImage;
+      link.download = selectedFile.originalName;
+      link.click();
+    }
   };
 
   const handleCloseFullscreen = () => {
@@ -78,33 +89,56 @@ export default function HomePage() {
     setOpenFullscreen(false);
   };
 
-  const toggleFileSelection = (fileId) => {
-    setSelectedFiles(prev =>
+  const toggleFileSelection = (fileId: string) => {
+    setSelectedFiles((prev) =>
       prev.includes(fileId)
-        ? prev.filter(id => id !== fileId)
+        ? prev.filter((id) => id !== fileId)
         : [...prev, fileId]
     );
   };
-  
-  const toggleFolderSelection = (folderId) => {
-    setSelectedFolders(prev =>
+
+  const toggleFolderSelection = (folderId: string) => {
+    setSelectedFolders((prev) =>
       prev.includes(folderId)
-        ? prev.filter(id => id !== folderId)
+        ? prev.filter((id) => id !== folderId)
         : [...prev, folderId]
     );
-  };  
+  };
+
+  const refreshData = () => {
+    const currentFolderId = folderHistory[folderHistory.length - 1] || null;
+    loadFolderContents(currentFolderId);
+    setRefreshSidebar((prev) => !prev);
+  };
 
   return (
     <div>
-      <Box display="flex" alignItems="center" mb={2}>
-        <IconButton onClick={handleBackClick} disabled={folderHistory.length === 0}>
-          <ArrowBack />
-        </IconButton>
-        <Typography variant="h5" ml={1}>Home Page</Typography>
+      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+        <Box display="flex" alignItems="center">
+          <IconButton onClick={handleBackClick} disabled={folderHistory.length === 0}>
+            <ArrowBack />
+          </IconButton>
+          <Typography variant="h5" ml={1}>
+            Drive
+          </Typography>
+        </Box>
+
+        <Box display="flex" alignItems="center" gap={2} sx={{ marginRight: '60px' }}>
+          <UploadModalTrigger 
+            parentFolderId={folderHistory[folderHistory.length - 1]}
+            onUploadSuccess={refreshData}
+          />
+          <Button variant="outlined" startIcon={<CreateNewFolderIcon />}>
+            New Folder
+          </Button>
+          <Button variant="outlined" startIcon={<SortIcon />}>
+            Sort
+          </Button>
+        </Box>
       </Box>
 
       <Box display="flex">
-        <FolderSidebar userId={userId} onFolderClick={handleFolderClick} />
+        <FolderSidebar userId={userId!} onFolderClick={handleFolderClick} refreshTrigger={refreshSidebar} />
         <Box display="flex" flexDirection="column" gap={4} flexWrap="wrap" mb={4} sx={{ flex: 1, paddingLeft: 2 }}>
           <Box display="flex" gap={4} flexWrap="wrap" mb={4}>
             {folders.map((folder) => (
@@ -121,7 +155,9 @@ export default function HomePage() {
                 sx={{
                   width: 120,
                   cursor: 'pointer',
-                  border: selectedFolders.includes(folder.folderId) ? '2px solid #1976d2' : '1px solid transparent',
+                  border: selectedFolders.includes(folder.folderId)
+                    ? '2px solid #1976d2'
+                    : '1px solid transparent',
                   borderRadius: 2,
                   p: 1,
                   backgroundColor: selectedFolders.includes(folder.folderId) ? '#e3f2fd' : 'transparent',
@@ -133,11 +169,13 @@ export default function HomePage() {
                 }}
               >
                 <Folder sx={{ fontSize: 60, color: '#1976d2' }} />
-                <Typography variant="body1" noWrap>{folder.name}</Typography>
+                <Typography variant="body1" noWrap>
+                  {folder.name}
+                </Typography>
               </Box>
             ))}
           </Box>
-            
+
           <Box display="flex" gap={4} flexWrap="wrap">
             {files.map((file) => (
               <Card
@@ -145,7 +183,9 @@ export default function HomePage() {
                 sx={{
                   width: 120,
                   p: 1,
-                  border: selectedFiles.includes(file.fileId) ? '2px solid #1976d2' : '1px solid transparent',
+                  border: selectedFiles.includes(file.fileId)
+                    ? '2px solid #1976d2'
+                    : '1px solid transparent',
                   borderRadius: 2,
                   backgroundColor: selectedFiles.includes(file.fileId) ? '#e3f2fd' : 'transparent',
                   cursor: 'pointer',
@@ -168,16 +208,18 @@ export default function HomePage() {
                   alt={file.originalName}
                   sx={{ objectFit: 'contain' }}
                 />
-                <Typography variant="body2" noWrap>{file.originalName}</Typography>
+                <Typography variant="body2" noWrap>
+                  {file.originalName}
+                </Typography>
               </Card>
             ))}
           </Box>
         </Box>
       </Box>
-      
+
       <Dialog open={openFullscreen} onClose={handleCloseFullscreen} maxWidth="lg" fullWidth>
         <DialogContent sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <img src={fullscreenImage} alt="Fullscreen Image" style={{ maxWidth: '100%', maxHeight: '80vh' }} />
+          <img src={fullscreenImage || ''} alt="Fullscreen Image" style={{ maxWidth: '100%', maxHeight: '80vh' }} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDownload} color="primary">
@@ -189,5 +231,5 @@ export default function HomePage() {
         </DialogActions>
       </Dialog>
     </div>
-  );  
+  );
 }
