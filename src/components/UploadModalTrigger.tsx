@@ -62,11 +62,7 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
     const zipBlob = await zip.generateAsync({ type: 'blob' });
     const targetFolderId = parentFolderId ?? StorageService.getUserFolder();
   
-    if (userId) {
-      await FolderService.upload(userId, targetFolderId, zipBlob);
-    } else {
-      console.error('User is not authenticated');
-    }
+    await FolderService.upload(userId, targetFolderId, zipBlob);
   };
 
   const handleUpload = async () => {
@@ -83,14 +79,9 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
       }
     } else if (uploadedFiles.length > 0) {
       try {
-        if (userId && parentFolderId) {
           await FileService.upload(uploadedFiles, userId, parentFolderId);
-        } else {
-          console.error('User is not authenticated');
-        }
-
-        resetModal();
-        onUploadSuccess();
+          resetModal();
+          onUploadSuccess();
       } catch (error) {
         console.error('Upload failed', error);
         setIsUploading(false);
