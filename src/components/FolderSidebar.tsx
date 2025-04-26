@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import FolderService from '../services/FolderService';
 import { Box, Collapse, List, ListItem, ListItemText, IconButton } from '@mui/material';
 import { Folder, ArrowForward, ArrowDownward } from '@mui/icons-material';
@@ -11,7 +11,8 @@ interface FolderSidebarProps {
   refreshTrigger: boolean;
 }
 
-const FolderSidebar: React.FC<FolderSidebarProps> = ({ userId, onFolderClick, refreshTrigger }) => {
+const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
+  const { userId, onFolderClick, refreshTrigger } = props;
   const [folderStructure, setFolderStructure] = useState<UserFolder[]>([]);
   const [expandedFolders, setExpandedFolders] = useState<string[]>([]);
 
