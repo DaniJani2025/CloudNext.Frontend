@@ -6,6 +6,7 @@ import JSZip from 'jszip';
 import FolderService from '../services/FolderService';
 import StorageService from '../services/StorageService';
 import FileService from '../services/FileService';
+import { EXCLUDED_FILES } from '@/constants/fileUpload';
 
 export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: { parentFolderId: string | null, onUploadSuccess: () => void }) {
   const [open, setOpen] = useState(false);
@@ -14,8 +15,6 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
   const [isUploading, setIsUploading] = useState(false);
 
   const userId = StorageService.getCurrentUser();
-
-  const excludedFiles = ['desktop.ini', 'thumbs.db', '.ds_store'];
 
   const handleFiles = (files: FileList | ArrayLike<File>) => {
     const fileArray = Array.from(files);
@@ -51,7 +50,7 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
   
     Array.from(folderFiles).forEach((file) => {
       const filename = file.name.toLowerCase();
-      if (excludedFiles.includes(filename)) {
+      if (EXCLUDED_FILES.includes(filename)) {
         return;
       }
 
