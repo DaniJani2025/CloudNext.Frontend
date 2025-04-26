@@ -104,6 +104,11 @@ export default function HomePage() {
     );
   };
 
+  const refreshData = () => {
+    const currentFolderId = folderHistory[folderHistory.length - 1] || null;
+    loadFolderContents(currentFolderId);
+  };
+
   return (
     <div>
       <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
@@ -117,7 +122,10 @@ export default function HomePage() {
         </Box>
 
         <Box display="flex" alignItems="center" gap={2} sx={{ marginRight: '60px' }}>
-          <UploadModalTrigger />
+          <UploadModalTrigger 
+            parentFolderId={folderHistory[folderHistory.length - 1]}
+            onUploadSuccess={refreshData}
+          />
           <Button variant="outlined" startIcon={<CreateNewFolderIcon />}>
             New Folder
           </Button>

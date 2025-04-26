@@ -1,5 +1,6 @@
 import axios from 'axios';
 import StorageService from './StorageService';
+import { Guid } from '../types/types';
 
 const API_BASE_URL = 'http://localhost:5074/api';
 let isRefreshing = false;
@@ -164,6 +165,28 @@ export default class ApiService {
       return response.data;
     } catch (error) {
       console.error(`POST BLOB ${endpoint} failed:`, error);
+      throw error;
+    }
+  }
+
+  async uploadFiles(endpoint = '', userId: Guid, files: File[], parentFolderId?: Guid) {
+    let url = `${endpoint}?userId=${userId}`;
+    if (parentFolderId) {
+      url += `&parentFolderId=${parentFolderId}`;
+    }
+
+    const formData = new FormData();
+    files.forEach((file) => formData.append('files', file));
+
+    try {
+      const response = await this.api.post(url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`UPLOAD FILES ${endpoint} failed:`, error);
       throw error;
     }
   }

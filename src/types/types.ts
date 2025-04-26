@@ -11,3 +11,5 @@ export interface UserFile {
     name: string;
     subFolders: UserFolder[];
   }
+
+  export type Guid = string;
