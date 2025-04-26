@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Box, Typography } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
-import FileService from '../services/FileService';
+import JSZip from 'jszip';
+import FolderService from '../services/FolderService';
 import StorageService from '../services/StorageService';
+import FileService from '../services/FileService';
 
 export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: { parentFolderId: string | null, onUploadSuccess: () => void }) {
   const [open, setOpen] = useState(false);
@@ -12,6 +14,8 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
   const [isUploading, setIsUploading] = useState(false);
 
   const userId = StorageService.getCurrentUser();
+
+  const excludedFiles = ['desktop.ini', 'thumbs.db', '.ds_store'];
 
   const handleFiles = (files: FileList | ArrayLike<File>) => {
     const fileArray = Array.from(files);
@@ -40,22 +44,58 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
     setIsUploading(false);
   };
 
-  const handleUpload = async () => {
-    if (uploadedFiles.length === 0) {
-      console.error('No files selected');
-      return;
-    }
+  const handleFolderUpload = async (folderFiles: FileList | ArrayLike<File>) => {
+    const zip = new JSZip();
+    const folderName = folderFiles[0]?.webkitRelativePath?.split('/')[0] || 'folder';
+    const folder = zip.folder(folderName);
+  
+    Array.from(folderFiles).forEach((file) => {
+      const filename = file.name.toLowerCase();
+      if (excludedFiles.includes(filename)) {
+        return;
+      }
 
+      const relativePathParts = file.webkitRelativePath.split('/').slice(1);
+      const relativePath = relativePathParts.join('/');
+      folder?.file(relativePath, file);
+    });
+  
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    parentFolderId = StorageService.getUserFolder();
+  
+    if (userId) {
+      await FolderService.upload(userId, parentFolderId, zipBlob);
+    } else {
+      console.error('User is not authenticated');
+    }
+  };
+
+  const handleUpload = async () => {
     setIsUploading(true);
-    try {
-      await FileService.upload(uploadedFiles, userId, parentFolderId);
-      resetModal();
-      onUploadSuccess();
-      // optionally: show success toast
-    } catch (error) {
-      console.error('Upload failed', error);
-      setIsUploading(false);
-      // optionally: show error toast
+
+    if (uploadMode === 'folder' && uploadedFiles.length > 0) {
+      try {
+        await handleFolderUpload(uploadedFiles);
+        resetModal();
+        onUploadSuccess();
+      } catch (error) {
+        console.error('Folder upload failed', error);
+        setIsUploading(false);
+      }
+    } else if (uploadedFiles.length > 0) {
+      try {
+        if (userId && parentFolderId) {
+          await FileService.upload(uploadedFiles, userId, parentFolderId);
+        } else {
+          console.error('User is not authenticated');
+        }
+
+        resetModal();
+        onUploadSuccess();
+      } catch (error) {
+        console.error('Upload failed', error);
+        setIsUploading(false);
+      }
     }
   };
 
@@ -141,7 +181,15 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
             </Box>
           )}
 
-          {uploadedFiles.length > 0 && (
+          {uploadedFiles.length > 0 && uploadMode === 'folder' && (
+            <Box mt={2}>
+              <Typography variant="subtitle1">Selected Folder:</Typography>
+              <Typography variant="body2">
+                • {uploadedFiles[0]?.webkitRelativePath.split('/')[0]}
+              </Typography>
+            </Box>
+          )}
+          {uploadedFiles.length > 0 && uploadMode === 'files' && (
             <Box mt={2}>
               <Typography variant="subtitle1">Selected Files:</Typography>
               {uploadedFiles.slice(0, 3).map((file, idx) => (

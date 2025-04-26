@@ -190,4 +190,23 @@ export default class ApiService {
       throw error;
     }
   }
+
+  async uploadFolder(endpoint = '', userId: string, parentFolderId: string | null, zipFile: Blob) {
+    const formData = new FormData();
+    formData.append('UserId', userId);
+    if (parentFolderId) {
+      formData.append('ParentFolderId', parentFolderId || '');
+    }
+    formData.append('ZipFile', zipFile);
+  
+    try {
+      const response = await this.api.post(endpoint, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Upload folder failed:', error);
+      throw error;
+    }
+  }
 }

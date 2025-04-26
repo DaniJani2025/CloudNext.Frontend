@@ -3,29 +3,40 @@ import FolderService from '../services/FolderService';
 import { Box, Collapse, List, ListItem, ListItemText, IconButton } from '@mui/material';
 import { Folder, ArrowForward, ArrowDownward } from '@mui/icons-material';
 import { UserFolder } from '../types/types';
+import StorageService from '../services/StorageService';
 
 interface FolderSidebarProps {
   userId: string;
   onFolderClick: (folderId: string) => void;
+  refreshTrigger: boolean;
 }
 
-const FolderSidebar: React.FC<FolderSidebarProps> = ({ userId, onFolderClick }) => {
+const FolderSidebar: React.FC<FolderSidebarProps> = ({ userId, onFolderClick, refreshTrigger }) => {
   const [folderStructure, setFolderStructure] = useState<UserFolder[]>([]);
   const [expandedFolders, setExpandedFolders] = useState<string[]>([]);
 
-  useEffect(() => {
+  const loadFolderStructure = () => {
     if (userId) {
       FolderService.getStructure(userId)
         .then((data) => {
           if (Array.isArray(data.subFolders)) {
             setFolderStructure(data.subFolders);
+            StorageService.setUserFolder(data.folderId);
           } else {
             console.error('Expected subFolders to be an array.');
           }
         })
         .catch((error) => console.error('Failed to fetch folder structure:', error));
     }
+  };
+
+  useEffect(() => {
+    loadFolderStructure();
   }, [userId]);
+
+  useEffect(() => {
+    loadFolderStructure();
+  }, [refreshTrigger]);
 
   const handleFolderClick = (folderId: string) => {
     onFolderClick(folderId);

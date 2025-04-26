@@ -21,6 +21,7 @@ export default function HomePage() {
   const [openFullscreen, setOpenFullscreen] = useState<boolean>(false);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
+  const [refreshSidebar, setRefreshSidebar] = useState(false);
 
   const userId = StorageService.getCurrentUser();
 
@@ -107,6 +108,7 @@ export default function HomePage() {
   const refreshData = () => {
     const currentFolderId = folderHistory[folderHistory.length - 1] || null;
     loadFolderContents(currentFolderId);
+    setRefreshSidebar((prev) => !prev);
   };
 
   return (
@@ -136,7 +138,7 @@ export default function HomePage() {
       </Box>
 
       <Box display="flex">
-        <FolderSidebar userId={userId!} onFolderClick={handleFolderClick} />
+        <FolderSidebar userId={userId!} onFolderClick={handleFolderClick} refreshTrigger={refreshSidebar} />
         <Box display="flex" flexDirection="column" gap={4} flexWrap="wrap" mb={4} sx={{ flex: 1, paddingLeft: 2 }}>
           <Box display="flex" gap={4} flexWrap="wrap" mb={4}>
             {folders.map((folder) => (

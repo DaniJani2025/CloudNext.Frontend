@@ -51,6 +51,14 @@ class StorageService {
     return localStorage.getItem("expiresAt");
   }
 
+  static setUserFolder(parentFolderId: string) {
+    return localStorage.setItem("parentFolderId", parentFolderId);
+  }
+
+  static getUserFolder(): string | null {
+    return localStorage.getItem("parentFolderId");
+  }
+
   static removeUserDetails() {
     localStorage.clear();
   }
