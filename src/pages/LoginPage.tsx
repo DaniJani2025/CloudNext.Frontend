@@ -8,15 +8,20 @@ import {
   Card,
   CardContent,
   Link,
+  IconButton,
+  InputAdornment,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import UserService from '../services/UserService';
 import StorageService from '../services/StorageService';
+import { AxiosError } from 'axios';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const getInitials = (email: string) => {
@@ -34,7 +39,6 @@ const LoginPage = () => {
       if (response?.success && response?.result) {
         const { token, userId, email, expiresAt } = response.result;
 
-        console.log('Login Success!');
         StorageService.setAccessToken(token);
         StorageService.setCurrentUser(userId);
         StorageService.setUserDisplayName(getInitials(email));
@@ -44,10 +48,17 @@ const LoginPage = () => {
         navigate('/');
       } else {
         setError(response?.errorMessage || 'Login failed');
+        setTimeout(() => setError(''), 5000);
       }
     } catch (err: unknown) {
-      console.log(`Error ${err}`);
-      setError('Login failed');
+      if (err instanceof AxiosError && err.response) {
+        console.log('Error occurred during login:', err.response?.data?.errorMessage || err.message);
+        setError(err.response?.data?.errorMessage || 'Login failed');
+      } else {
+        console.log('Unexpected error:', err);
+        setError('Login failed');
+      }
+      setTimeout(() => setError(''), 5000);
     }
   };
 
@@ -74,12 +85,24 @@ const LoginPage = () => {
             />
             <TextField
               label="Password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               variant="outlined"
               fullWidth
               margin="normal"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <Button
               variant="contained"
