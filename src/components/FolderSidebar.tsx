@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import FolderService from '../services/FolderService';
-import { Box, Collapse, List, ListItem, ListItemText, IconButton } from '@mui/material';
+import { Box, Collapse, List, ListItem, ListItemText, IconButton, ListItemButton } from '@mui/material';
 import { Folder, ArrowForward, ArrowDownward } from '@mui/icons-material';
 import { UserFolder } from '../types/types';
 import StorageService from '../services/StorageService';
@@ -57,7 +57,7 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
         {folderStructure.length > 0 ? (
           folderStructure.map((folder: UserFolder) => (
             <div key={folder.folderId}>
-              <ListItem button onClick={() => handleFolderClick(folder.folderId)}>
+              <ListItemButton onClick={() => handleFolderClick(folder.folderId)}>
                 <Folder sx={{ marginRight: 1 }} />
                 <ListItemText primary={folder.name} />
                 
@@ -69,20 +69,19 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
                 >
                   {expandedFolders.includes(folder.folderId) ? <ArrowDownward /> : <ArrowForward />}
                 </IconButton>
-              </ListItem>
+              </ListItemButton>
               
               <Collapse in={expandedFolders.includes(folder.folderId)}>
                 <List component="div" disablePadding>
                   {folder.subFolders &&
                     folder.subFolders.map((subFolder) => (
-                      <ListItem
-                        button
+                      <ListItemButton
                         key={subFolder.folderId}
                         sx={{ paddingLeft: 4 }}
                         onClick={() => handleFolderClick(subFolder.folderId)}
                       >
                         <ListItemText primary={subFolder.name} />
-                      </ListItem>
+                      </ListItemButton>
                     ))}
                 </List>
               </Collapse>
