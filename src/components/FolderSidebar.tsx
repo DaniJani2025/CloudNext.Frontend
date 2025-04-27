@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import FolderService from '../services/FolderService';
-import { Box, Collapse, List, ListItem, ListItemText, IconButton, ListItemButton } from '@mui/material';
-import { Folder, ArrowForward, ArrowDownward } from '@mui/icons-material';
+import { Box, Collapse, List, ListItem, ListItemText, IconButton, ListItemButton, Button } from '@mui/material';
+import { Folder, ArrowForward, ArrowDownward, Home } from '@mui/icons-material';
 import { UserFolder } from '../types/types';
 import StorageService from '../services/StorageService';
 
@@ -9,10 +9,11 @@ interface FolderSidebarProps {
   userId: string;
   onFolderClick: (folderId: string) => void;
   refreshTrigger: boolean;
+  getHome: () => void;
 }
 
 const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
-  const { userId, onFolderClick, refreshTrigger } = props;
+  const { userId, onFolderClick, refreshTrigger, getHome } = props;
   const [folderStructure, setFolderStructure] = useState<UserFolder[]>([]);
   const [expandedFolders, setExpandedFolders] = useState<string[]>([]);
 
@@ -53,6 +54,11 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
 
   return (
     <Box sx={{ width: 250, borderRight: '1px solid #ccc', padding: 2 }}>
+      <ListItemButton onClick={getHome} sx={{ padding: 1 }}>
+        <Home sx={{ marginRight: 1 }} />
+        <ListItemText primary="Home" />
+      </ListItemButton>
+
       <List>
         {folderStructure.length > 0 ? (
           folderStructure.map((folder: UserFolder) => (
@@ -60,7 +66,7 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
               <ListItemButton onClick={() => handleFolderClick(folder.folderId)}>
                 <Folder sx={{ marginRight: 1 }} />
                 <ListItemText primary={folder.name} />
-                
+
                 <IconButton
                   onClick={(e) => {
                     e.stopPropagation();
@@ -70,7 +76,7 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
                   {expandedFolders.includes(folder.folderId) ? <ArrowDownward /> : <ArrowForward />}
                 </IconButton>
               </ListItemButton>
-              
+
               <Collapse in={expandedFolders.includes(folder.folderId)}>
                 <List component="div" disablePadding>
                   {folder.subFolders &&

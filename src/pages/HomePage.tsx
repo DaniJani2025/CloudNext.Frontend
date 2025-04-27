@@ -11,6 +11,7 @@ import UploadModalTrigger from '../components/UploadModalTrigger';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import SortIcon from '@mui/icons-material/Sort';
 import { UserFile, UserFolder } from '../types/types';
+import NewFolderButton from '../components/NewFolderbutton';
 
 export default function HomePage() {
   const [folders, setFolders] = useState<UserFolder[]>([]);
@@ -40,6 +41,14 @@ export default function HomePage() {
     FileService.getAll(userId, validFolderId)
       .then(setFiles)
       .catch((error) => console.error('Failed to fetch files:', error));
+  };
+
+  const getHome = () => {
+    if (userId) {
+      FolderService.getAll(userId)
+        .then(setFolders)
+        .catch((error) => console.error('Failed to fetch folders:', error));
+    }
   };
 
   useEffect(() => {
@@ -124,21 +133,29 @@ export default function HomePage() {
         </Box>
 
         <Box display="flex" alignItems="center" gap={2} sx={{ marginRight: '60px' }}>
-          <UploadModalTrigger 
-            parentFolderId={folderHistory[folderHistory.length - 1]}
-            onUploadSuccess={refreshData}
-          />
-          <Button variant="outlined" startIcon={<CreateNewFolderIcon />}>
-            New Folder
-          </Button>
-          <Button variant="outlined" startIcon={<SortIcon />}>
-            Sort
-          </Button>
-        </Box>
+        <UploadModalTrigger
+          parentFolderId={folderHistory[folderHistory.length - 1]}
+          onUploadSuccess={refreshData}
+        />
+        
+        <NewFolderButton
+          parentFolderId={folderHistory[folderHistory.length - 1]}
+          onUploadSuccess={refreshData}
+        />
+
+        <Button variant="outlined" startIcon={<SortIcon />}>
+          Sort
+        </Button>
+      </Box>
       </Box>
 
       <Box display="flex">
-        <FolderSidebar userId={userId!} onFolderClick={handleFolderClick} refreshTrigger={refreshSidebar} />
+        <FolderSidebar
+        userId={userId!}
+        onFolderClick={handleFolderClick}
+        refreshTrigger={refreshSidebar}
+        getHome={getHome}
+      />
         <Box display="flex" flexDirection="column" gap={4} flexWrap="wrap" mb={4} sx={{ flex: 1, paddingLeft: 2 }}>
           <Box display="flex" gap={4} flexWrap="wrap" mb={4}>
             {folders.map((folder) => (

@@ -9,6 +9,19 @@ class FolderService extends ApiService {
     return this.uploadFolder('/upload', userId, parentFolderId, zipFile);
   }
 
+  async createFolder(userId: string, folderName: string, parentFolderId: string | null) {
+    const payload: any = {
+      folderName,
+      userId,
+    };
+
+    if (parentFolderId) {
+      payload.parentFolderId = parentFolderId;
+    }
+
+    return this.post('/create-folder', payload);
+  }
+
   getStructure(userId: string) {
     const url = `structure?userId=${userId}`
     return this.get(url);
