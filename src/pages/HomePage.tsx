@@ -1,17 +1,15 @@
-import { useEffect, useState } from 'react';
-import { Folder, ArrowBack } from '@mui/icons-material';
+import React, { useEffect, useState } from 'react';
+import { Folder, ArrowBack, Download as DownloadIcon, CloseFullscreen as CloseFullscreenIcon, Sort as SortIcon } from '@mui/icons-material';
 import { Box, Typography, Card, CardMedia, IconButton, Dialog, DialogActions, DialogContent, Button } from '@mui/material';
+import JSZip from 'jszip';
+
 import StorageService from '../services/StorageService';
 import FolderService from '../services/FolderService';
 import FileService from '../services/FileService';
 import FolderSidebar from '../components/FolderSidebar';
-import DownloadIcon from '@mui/icons-material/Download';
-import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import UploadModalTrigger from '../components/UploadModalTrigger';
-import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
-import SortIcon from '@mui/icons-material/Sort';
-import { UserFile, UserFolder } from '../types/types';
 import NewFolderButton from '../components/NewFolderbutton';
+import { UserFile, UserFolder } from '../types/types';
 
 export default function HomePage() {
   const [folders, setFolders] = useState<UserFolder[]>([]);
@@ -27,8 +25,6 @@ export default function HomePage() {
   const userId = StorageService.getCurrentUser();
 
   const loadFolderContents = (folderId: string | null) => {
-    if (!userId) return;
-
     const validFolderId = folderId === null ? undefined : folderId;
 
     setSelectedFolders([]);
@@ -36,19 +32,11 @@ export default function HomePage() {
 
     FolderService.getAll(userId, validFolderId)
       .then(setFolders)
-      .catch((error) => console.error('Failed to fetch folders:', error));
-  
+      .catch((e) => console.error('Failed to fetch folders:', e));
+
     FileService.getAll(userId, validFolderId)
       .then(setFiles)
-      .catch((error) => console.error('Failed to fetch files:', error));
-  };
-
-  const getHome = () => {
-    if (userId) {
-      FolderService.getAll(userId)
-        .then(setFolders)
-        .catch((error) => console.error('Failed to fetch folders:', error));
-    }
+      .catch((e) => console.error('Failed to fetch files:', e));
   };
 
   useEffect(() => {
@@ -60,135 +48,186 @@ export default function HomePage() {
     loadFolderContents(folderId);
   };
 
+  const getHome = () => {
+      FolderService.getAll(userId)
+        .then(setFolders)
+        .catch((error) => console.error('Failed to fetch folders:', error));
+
+        FileService.getAll(userId)
+        .then(setFiles)
+        .catch((e) => console.error('Failed to fetch files:', e));
+  };
+
   const handleBackClick = () => {
     setFolderHistory((prev) => {
-      const newHistory = [...prev];
-      newHistory.pop();
-      const previousFolderId = newHistory[newHistory.length - 1] || null;
-      loadFolderContents(previousFolderId);
-      return newHistory;
+      const h = [...prev];
+      h.pop();
+      const prevId = h[h.length - 1] || null;
+      loadFolderContents(prevId);
+      return h;
     });
   };
 
   const handleFileClick = (file: UserFile) => {
     FileService.download(userId, [file.fileId])
-      .then((response) => {
-        const blob = new Blob([response], { type: file.contentType });
+      .then((resp) => {
+        const blob = new Blob([resp], { type: file.contentType });
         const url = URL.createObjectURL(blob);
         setFullscreenImage(url);
         setSelectedFile(file);
         setOpenFullscreen(true);
       })
-      .catch((error) => console.error('Failed to fetch file:', error));
+      .catch((e) => console.error('Failed to fetch file:', e));
+  };
+
+  const handleDownloadSelectedFiles = async () => {
+    if (!userId || !selectedFiles.length) return;
+    try {
+      const resp = await FileService.download(userId, selectedFiles);
+      const zipBlob = new Blob([resp], { type: 'application/zip' });
+      const zip = await JSZip.loadAsync(zipBlob);
+      for (const name of Object.keys(zip.files)) {
+        const f = zip.files[name];
+        if (!f.dir) {
+          const content = await f.async('blob');
+          const url = URL.createObjectURL(content);
+          const a = document.createElement('a');
+          a.href = url; a.download = name;
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+      }
+      setSelectedFiles([]);
+    } catch (e) {
+      console.error('Failed to download files:', e);
+    }
+  };
+
+  const handleDownloadSelectedFolders = async () => {
+    if (!userId || !selectedFolders.length) return;
+    try {
+      const folderId = selectedFolders[0];
+      const zipBlob = await FolderService.download(userId, folderId);
+      const url = URL.createObjectURL(zipBlob);
+      const ts = new Date().toISOString().replace(/[-:.]/g, '');
+      const fn = `folder_${ts}.zip`;
+      const a = document.createElement('a');
+      a.href = url; a.download = fn;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setSelectedFolders([]);
+    } catch (e) {
+      console.error('Failed to download folder:', e);
+    }
   };
 
   const handleDownload = () => {
     if (selectedFile && fullscreenImage) {
-      const link = document.createElement('a');
-      link.href = fullscreenImage;
-      link.download = selectedFile.originalName;
-      link.click();
+      const a = document.createElement('a');
+      a.href = fullscreenImage;
+      a.download = selectedFile.originalName;
+      a.click();
     }
   };
 
   const handleCloseFullscreen = () => {
-    if (fullscreenImage) {
-      URL.revokeObjectURL(fullscreenImage);
-    }
+    if (fullscreenImage) URL.revokeObjectURL(fullscreenImage);
     setOpenFullscreen(false);
   };
 
   const toggleFileSelection = (fileId: string) => {
-    setSelectedFiles((prev) =>
-      prev.includes(fileId)
-        ? prev.filter((id) => id !== fileId)
-        : [...prev, fileId]
-    );
+    if (selectedFiles.includes(fileId)) {
+      setSelectedFiles((p) => p.filter((id) => id !== fileId));
+    } else {
+      setSelectedFolders([]);
+      setSelectedFiles((p) => [...p, fileId]);
+    }
   };
 
   const toggleFolderSelection = (folderId: string) => {
-    setSelectedFolders((prev) =>
-      prev.includes(folderId)
-        ? prev.filter((id) => id !== folderId)
-        : [...prev, folderId]
-    );
+    if (selectedFolders.includes(folderId)) {
+      setSelectedFolders([]);
+    } else {
+      setSelectedFiles([]);
+      setSelectedFolders([folderId]);
+    }
   };
 
   const refreshData = () => {
-    const currentFolderId = folderHistory[folderHistory.length - 1] || null;
-    loadFolderContents(currentFolderId);
-    setRefreshSidebar((prev) => !prev);
+    const current = folderHistory[folderHistory.length - 1] || null;
+    loadFolderContents(current);
+    setRefreshSidebar((p) => !p);
   };
 
   return (
     <div>
       <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
         <Box display="flex" alignItems="center">
-          <IconButton onClick={handleBackClick} disabled={folderHistory.length === 0}>
+          <IconButton onClick={handleBackClick} disabled={!folderHistory.length}>
             <ArrowBack />
           </IconButton>
-          <Typography variant="h5" ml={1}>
-            Drive
-          </Typography>
+          <Typography variant="h5" ml={1}>Drive</Typography>
         </Box>
-
-        <Box display="flex" alignItems="center" gap={2} sx={{ marginRight: '60px' }}>
-        <UploadModalTrigger
-          parentFolderId={folderHistory[folderHistory.length - 1]}
-          onUploadSuccess={refreshData}
-        />
-        
-        <NewFolderButton
-          parentFolderId={folderHistory[folderHistory.length - 1]}
-          onUploadSuccess={refreshData}
-        />
-
-        <Button variant="outlined" startIcon={<SortIcon />}>
-          Sort
-        </Button>
+        <Box display="flex" alignItems="center" gap={2} sx={{ mr: 6 }}>
+          <UploadModalTrigger parentFolderId={folderHistory[folderHistory.length - 1]} onUploadSuccess={refreshData} />
+          <NewFolderButton parentFolderId={folderHistory[folderHistory.length - 1]} onUploadSuccess={refreshData} />
+          <Button variant="outlined" startIcon={<SortIcon />}>Sort</Button>
+        </Box>
       </Box>
-      </Box>
+
+      {(selectedFiles.length || selectedFolders.length) > 0 && (
+        <Box
+          display="flex" alignItems="center" justifyContent="space-between"
+          sx={{ bgcolor: '#e3f2fd', border: '1px solid #90caf9', borderRadius: 2, px: 2, py: 1, mb: 2 }}
+        >
+          <Typography>
+            {selectedFiles.length + selectedFolders.length}{' '}
+            {(selectedFiles.length + selectedFolders.length) === 1 ? 'item' : 'items'} selected
+          </Typography>
+          <Box display="flex" gap={2}>
+            {selectedFiles.length > 0 && (
+              <Button size="small" variant="contained" onClick={handleDownloadSelectedFiles}>
+                Download Files
+              </Button>
+            )}
+            {selectedFolders.length > 0 && (
+              <Button size="small" variant="contained" onClick={handleDownloadSelectedFolders}>
+                Download Folder
+              </Button>
+            )}
+            <Button
+              size="small" variant="outlined"
+              onClick={() => { setSelectedFiles([]); setSelectedFolders([]); }}
+            >
+              Clear Selection
+            </Button>
+          </Box>
+        </Box>
+      )}
 
       <Box display="flex">
-        <FolderSidebar
-        userId={userId!}
-        onFolderClick={handleFolderClick}
-        refreshTrigger={refreshSidebar}
-        getHome={getHome}
-      />
-        <Box display="flex" flexDirection="column" gap={4} flexWrap="wrap" mb={4} sx={{ flex: 1, paddingLeft: 2 }}>
+        <FolderSidebar userId={userId!} onFolderClick={handleFolderClick} refreshTrigger={refreshSidebar} getHome={getHome} />
+        <Box flex={1} display="flex" flexDirection="column" gap={4} flexWrap="wrap" pl={2} mb={4}>
+
+          {/* Folders */}
           <Box display="flex" gap={4} flexWrap="wrap" mb={4}>
-            {folders.map((folder) => (
+            {folders.map((f) => (
               <Box
-                key={folder.folderId}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleFolderSelection(folder.folderId);
-                }}
-                onDoubleClick={() => handleFolderClick(folder.folderId)}
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
+                key={f.folderId}
+                onClick={(e) => { e.stopPropagation(); toggleFolderSelection(f.folderId); }}
+                onDoubleClick={(e) => { e.stopPropagation(); handleFolderClick(f.folderId); }}
+                display="flex" flexDirection="column" alignItems="center"
                 sx={{
-                  width: 120,
-                  cursor: 'pointer',
-                  border: selectedFolders.includes(folder.folderId)
-                    ? '2px solid #1976d2'
-                    : '1px solid transparent',
-                  borderRadius: 2,
-                  p: 1,
-                  backgroundColor: selectedFolders.includes(folder.folderId) ? '#e3f2fd' : 'transparent',
-                  transition: 'background-color 0.3s ease, border 0.3s ease',
-                  '&:hover': {
-                    backgroundColor: '#e3f2fd',
-                    border: '2px solid #1976d2',
-                  },
+                  width: 120, cursor: 'pointer',
+                  border: selectedFolders.includes(f.folderId) ? '2px solid #1976d2' : '1px solid transparent',
+                  borderRadius: 2, p: 1,
+                  bgcolor: selectedFolders.includes(f.folderId) ? '#e3f2fd' : 'transparent',
+                  transition: '0.3s',
+                  '&:hover': { bgcolor: '#e3f2fd', border: '2px solid #1976d2' },
                 }}
               >
                 <Folder sx={{ fontSize: 60, color: '#1976d2' }} />
-                <Typography variant="body1" noWrap>
-                  {folder.name}
-                </Typography>
+                <Typography noWrap>{f.name}</Typography>
               </Box>
             ))}
           </Box>
@@ -197,54 +236,33 @@ export default function HomePage() {
             {files.map((file) => (
               <Card
                 key={file.fileId}
+                onClick={(e) => { e.stopPropagation(); toggleFileSelection(file.fileId); }}
+                onDoubleClick={(e) => { e.stopPropagation(); handleFileClick(file); }}
                 sx={{
-                  width: 120,
-                  p: 1,
-                  border: selectedFiles.includes(file.fileId)
-                    ? '2px solid #1976d2'
-                    : '1px solid transparent',
+                  width: 120, p: 1, cursor: 'pointer',
+                  border: selectedFiles.includes(file.fileId) ? '2px solid #1976d2' : '1px solid transparent',
                   borderRadius: 2,
-                  backgroundColor: selectedFiles.includes(file.fileId) ? '#e3f2fd' : 'transparent',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.3s ease, border 0.3s ease',
-                  '&:hover': {
-                    backgroundColor: '#e3f2fd',
-                    border: '2px solid #1976d2',
-                  },
+                  bgcolor: selectedFiles.includes(file.fileId) ? '#e3f2fd' : 'transparent',
+                  transition: '0.3s',
+                  '&:hover': { bgcolor: '#e3f2fd', border: '2px solid #1976d2' },
                 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleFileSelection(file.fileId);
-                }}
-                onDoubleClick={() => handleFileClick(file)}
               >
-                <CardMedia
-                  component="img"
-                  height="60"
-                  image={file.base64Thumbnail}
-                  alt={file.originalName}
-                  sx={{ objectFit: 'contain' }}
-                />
-                <Typography variant="body2" noWrap>
-                  {file.originalName}
-                </Typography>
+                <CardMedia component="img" height="60" image={file.base64Thumbnail} alt={file.originalName} sx={{ objectFit: 'contain' }} />
+                <Typography noWrap>{file.originalName}</Typography>
               </Card>
             ))}
           </Box>
+
         </Box>
       </Box>
 
       <Dialog open={openFullscreen} onClose={handleCloseFullscreen} maxWidth="lg" fullWidth>
-        <DialogContent sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <img src={fullscreenImage || ''} alt="Fullscreen Image" style={{ maxWidth: '100%', maxHeight: '80vh' }} />
+        <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
+          {fullscreenImage && <img src={fullscreenImage} alt="" style={{ maxWidth: '100%', maxHeight: '80vh' }} />}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDownload} color="primary">
-            <DownloadIcon />
-          </Button>
-          <Button onClick={handleCloseFullscreen} color="secondary">
-            <CloseFullscreenIcon />
-          </Button>
+          <Button onClick={handleDownload} startIcon={<DownloadIcon />}>Download</Button>
+          <Button onClick={handleCloseFullscreen} startIcon={<CloseFullscreenIcon />}>Close</Button>
         </DialogActions>
       </Dialog>
     </div>

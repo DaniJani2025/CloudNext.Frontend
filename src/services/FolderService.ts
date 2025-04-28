@@ -5,6 +5,15 @@ class FolderService extends ApiService {
     super('folder');
   }
 
+  async download(userId: string, folderId: string) {
+    const payload = {
+      userId,
+      folderId,
+    };
+
+    return this.postBlob('/download', payload);
+  }
+
   async upload(userId: string, parentFolderId: string | null, zipFile: Blob) {
     return this.uploadFolder('/upload', userId, parentFolderId, zipFile);
   }

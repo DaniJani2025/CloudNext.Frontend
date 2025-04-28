@@ -163,7 +163,6 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
                   type="file"
                   hidden
                   multiple={uploadMode === 'files'}
-                  //@ts-ignore
                   webkitdirectory={uploadMode === 'folder' ? 'true' : undefined}
                   onChange={handleFileInputChange}
                 />

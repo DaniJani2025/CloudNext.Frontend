@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import FolderService from '../services/FolderService';
-import { Box, Collapse, List, ListItem, ListItemText, IconButton, ListItemButton, Button } from '@mui/material';
+import { Box, Collapse, List, ListItem, ListItemText, IconButton, ListItemButton } from '@mui/material';
 import { Folder, ArrowForward, ArrowDownward, Home } from '@mui/icons-material';
 import { UserFolder } from '../types/types';
 import StorageService from '../services/StorageService';
