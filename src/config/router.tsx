@@ -3,6 +3,7 @@ import Layout from '../components/Layout';
 import HomePage from '../pages/HomePage';
 import LoginPage from '../pages/LoginPage';
 import RegistrationPage from '../pages/RegistrationPage';
+import RequestPasswordResetPage from '../pages/RequestPasswordResetPage';
 
 const routes = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const routes = createBrowserRouter([
       {
         path: "/registration",
         element: <RegistrationPage />,
+      },
+      {
+        path: "/forgot-password",
+        element: <RequestPasswordResetPage />,
       },
     ],
   },
