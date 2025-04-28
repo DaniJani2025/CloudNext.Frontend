@@ -10,6 +10,9 @@ import {
   Link,
   IconButton,
   InputAdornment,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -83,16 +86,14 @@ const LoginPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <TextField
-              label="Password"
-              type={showPassword ? 'text' : 'password'}
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              InputProps={{
-                endAdornment: (
+            <FormControl fullWidth variant="outlined" margin="normal">
+              <InputLabel htmlFor="password">Password</InputLabel>
+              <OutlinedInput
+                id="password"
+                type="text"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                endAdornment={
                   <InputAdornment position="end">
                     <IconButton
                       onClick={() => setShowPassword(!showPassword)}
@@ -101,9 +102,15 @@ const LoginPage = () => {
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
-                ),
-              }}
-            />
+                }
+                label="Password"
+                sx={{
+                  '& input': {
+                    WebkitTextSecurity: showPassword ? 'none' : 'disc',
+                  },
+                }}
+              />
+            </FormControl>
             <Button
               variant="contained"
               fullWidth

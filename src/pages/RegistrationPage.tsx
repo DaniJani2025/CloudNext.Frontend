@@ -10,6 +10,9 @@ import {
   Link,
   IconButton,
   InputAdornment,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -101,18 +104,14 @@ const RegistrationPage = () => {
               error={!!emailError}
               helperText={emailError}
             />
-            <TextField
-              label="Password"
-              type={showPassword ? 'text' : 'password'}
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={!!passwordError}
-              helperText={passwordError}
-              InputProps={{
-                endAdornment: (
+            <FormControl fullWidth variant="outlined" margin="normal" error={!!passwordError}>
+              <InputLabel htmlFor="password">Password</InputLabel>
+              <OutlinedInput
+                id="password"
+                type="text"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                endAdornment={
                   <InputAdornment position="end">
                     <IconButton
                       onClick={() => setShowPassword(!showPassword)}
@@ -121,21 +120,28 @@ const RegistrationPage = () => {
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
-                ),
-              }}
-            />
-            <TextField
-              label="Confirm Password"
-              type={showConfirmPassword ? 'text' : 'password'}
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              error={!!confirmPasswordError}
-              helperText={confirmPasswordError}
-              InputProps={{
-                endAdornment: (
+                }
+                label="Password"
+                sx={{
+                  '& input': {
+                    WebkitTextSecurity: showPassword ? 'none' : 'disc',
+                  },
+                }}
+              />
+              {passwordError && (
+                <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '4px' }}>
+                  {passwordError}
+                </div>
+              )}
+            </FormControl>
+            <FormControl fullWidth variant="outlined" margin="normal" error={!!confirmPasswordError}>
+              <InputLabel htmlFor="confirm-password">Confirm Password</InputLabel>
+              <OutlinedInput
+                id="confirm-password"
+                type="text"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                endAdornment={
                   <InputAdornment position="end">
                     <IconButton
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -144,9 +150,20 @@ const RegistrationPage = () => {
                       {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
-                ),
-              }}
-            />
+                }
+                label="Confirm Password"
+                sx={{
+                  '& input': {
+                    WebkitTextSecurity: showConfirmPassword ? 'none' : 'disc',
+                  },
+                }}
+              />
+              {confirmPasswordError && (
+                <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '4px' }}>
+                  {confirmPasswordError}
+                </div>
+              )}
+            </FormControl>
             <Button
               variant="contained"
               fullWidth
