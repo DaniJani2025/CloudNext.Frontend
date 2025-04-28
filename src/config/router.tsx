@@ -4,6 +4,7 @@ import HomePage from '../pages/HomePage';
 import LoginPage from '../pages/LoginPage';
 import RegistrationPage from '../pages/RegistrationPage';
 import RequestPasswordResetPage from '../pages/RequestPasswordResetPage';
+import VerificationComplete from '../pages/VerificationComplete';
 
 const routes = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const routes = createBrowserRouter([
       {
         path: "/forgot-password",
         element: <RequestPasswordResetPage />,
+      },
+      {
+        path: "/verification-complete",
+        element: <VerificationComplete />,
       },
     ],
   },
