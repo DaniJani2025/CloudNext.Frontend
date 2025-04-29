@@ -2,7 +2,8 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import StorageService from './StorageService';
 import { Guid, RefreshSubscriber, TokenResponse, TokenResult } from '../types/types';
 
-const API_BASE_URL = 'https://localhost:7245/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 let isRefreshing = false;
 let refreshSubscribers: RefreshSubscriber[] = [];
 

@@ -168,7 +168,7 @@ export default function HomePage() {
           </IconButton>
           <Typography variant="h5" ml={1}>Drive</Typography>
         </Box>
-        <Box display="flex" alignItems="center" gap={2} sx={{ mr: 6 }}>
+        <Box display="flex" alignItems="center" gap={2} sx={{ mr: 8 }}>
           <UploadModalTrigger parentFolderId={folderHistory[folderHistory.length - 1]} onUploadSuccess={refreshData} />
           <NewFolderButton parentFolderId={folderHistory[folderHistory.length - 1]} onUploadSuccess={refreshData} />
           <Button variant="outlined" startIcon={<SortIcon />}>Sort</Button>
