@@ -8,8 +8,8 @@ export default defineConfig({
   server: {
     host: true,
     https: {
-      key: fs.readFileSync('localhost-key.pem'),
-      cert: fs.readFileSync('localhost-cert.pem'),
+      key: fs.readFileSync('D:\\Projects\\CloudNext\\Certificates\\localhost-key.pem'),
+      cert: fs.readFileSync('D:\\Projects\\CloudNext\\Certificates\\localhost-cert.pem'),
     },
   },
 })
