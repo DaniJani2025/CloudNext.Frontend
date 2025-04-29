@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import StorageService from './StorageService';
 import { Guid, RefreshSubscriber, TokenResponse, TokenResult } from '../types/types';
 
-const API_BASE_URL = 'http://localhost:5074/api';
+const API_BASE_URL = 'https://127.0.0.1:7245/api';
 let isRefreshing = false;
 let refreshSubscribers: RefreshSubscriber[] = [];
 
