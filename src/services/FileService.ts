@@ -1,5 +1,6 @@
 import ApiService from './ApiService';
 import { Guid } from '../types/types';
+import { AxiosRequestConfig } from 'axios';
 
 class FileService extends ApiService {
   constructor() {
@@ -31,6 +32,26 @@ class FileService extends ApiService {
     }
     return this.get(url);
   }
+
+  async stream(fileId: Guid, userId: Guid, rangeHeader?: string) {
+    const url = `stream/${fileId}?userId=${userId}`;
+    const config: AxiosRequestConfig = {
+      responseType: 'blob',
+      headers: {}
+    };
+  
+    if (rangeHeader) {
+      config.headers!['Range'] = rangeHeader;
+    }
+  
+    try {
+      const response = await this.api.get(url, config);
+      return response.data; // This will be a Blob
+    } catch (error) {
+      console.error(`STREAM ${url} failed:`, error);
+      throw error;
+    }
+  }  
 }
 
 export default new FileService();

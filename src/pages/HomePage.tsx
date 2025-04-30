@@ -82,6 +82,34 @@ export default function HomePage() {
 
   const handleDownloadSelectedFiles = async () => {
     if (!userId || !selectedFiles.length) return;
+  
+    // === SINGLE FILE ===
+    if (selectedFiles.length === 1) {
+      const fileId = selectedFiles[0];
+      const file = files.find((f) => f.fileId === fileId);
+      if (!file) return;
+  
+      try {
+        const resp = await FileService.download(userId, [fileId]);
+        const blob = new Blob([resp], { type: file.contentType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.originalName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+  
+        setSelectedFiles([]);
+      } catch (e) {
+        console.error('Failed to download file:', e);
+      }
+  
+      return;
+    }
+  
+    // === MULTIPLE FILES ===
     try {
       const resp = await FileService.download(userId, selectedFiles);
       const zipBlob = new Blob([resp], { type: 'application/zip' });
@@ -92,8 +120,11 @@ export default function HomePage() {
           const content = await f.async('blob');
           const url = URL.createObjectURL(content);
           const a = document.createElement('a');
-          a.href = url; a.download = name;
-          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          a.href = url;
+          a.download = name;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
           URL.revokeObjectURL(url);
         }
       }
@@ -101,7 +132,7 @@ export default function HomePage() {
     } catch (e) {
       console.error('Failed to download files:', e);
     }
-  };
+  };  
 
   const handleDownloadSelectedFolders = async () => {
     if (!userId || !selectedFolders.length) return;
@@ -209,7 +240,6 @@ export default function HomePage() {
         <FolderSidebar userId={userId!} onFolderClick={handleFolderClick} refreshTrigger={refreshSidebar} getHome={getHome} />
         <Box flex={1} display="flex" flexDirection="column" gap={4} flexWrap="wrap" pl={2} mb={4}>
 
-          {/* Folders */}
           <Box display="flex" gap={4} flexWrap="wrap" mb={4}>
             {folders.map((f) => (
               <Box
