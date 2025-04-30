@@ -39,6 +39,10 @@ build/
 localhost-key.pem
 localhost-cert.pem
 
+#Vite Config file
+vite.config.*
+vite.config*/
+
 # System files
 .DS_Store
 Thumbs.db
