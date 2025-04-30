@@ -327,26 +327,26 @@ export default function HomePage() {
                 }}
               >
                 <Box position="relative">
-  <CardMedia
-    component="img"
-    height="60"
-    image={file.base64Thumbnail}
-    alt={file.originalName}
-    sx={{ objectFit: 'contain' }}
-  />
-  {isVideo(file) && (
-    <PlayCircleFilledIcon
-      sx={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        fontSize: 32,
-        color: 'rgba(255,255,255,0.8)',
-      }}
-    />
-  )}
-</Box>
+                  <CardMedia
+                    component="img"
+                    height="60"
+                    image={file.base64Thumbnail}
+                    alt={file.originalName}
+                    sx={{ objectFit: 'contain' }}
+                  />
+                  {isVideo(file) && (
+                    <PlayCircleFilledIcon
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        fontSize: 32,
+                        color: 'rgba(255,255,255,0.8)',
+                      }}
+                    />
+                  )}
+                </Box>
                 <Typography noWrap>{file.originalName}</Typography>
               </Card>
             ))}
