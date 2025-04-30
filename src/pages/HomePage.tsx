@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Folder, ArrowBack, Download as DownloadIcon, CloseFullscreen as CloseFullscreenIcon, Sort as SortIcon } from '@mui/icons-material';
 import { Box, Typography, Card, CardMedia, IconButton, Dialog, DialogActions, DialogContent, Button } from '@mui/material';
+import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import JSZip from 'jszip';
 
 import StorageService from '../services/StorageService';
@@ -10,6 +11,7 @@ import FolderSidebar from '../components/FolderSidebar';
 import UploadModalTrigger from '../components/UploadModalTrigger';
 import NewFolderButton from '../components/NewFolderbutton';
 import { UserFile, UserFolder } from '../types/types';
+
 
 export default function HomePage() {
   const [folders, setFolders] = useState<UserFolder[]>([]);
@@ -21,8 +23,13 @@ export default function HomePage() {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
   const [refreshSidebar, setRefreshSidebar] = useState(false);
+  const [fullscreenVideo, setFullscreenVideo]     = useState<string | null>(null);
+  const [openVideoFullscreen, setOpenVideoFullscreen] = useState<boolean>(false);
 
   const userId = StorageService.getCurrentUser();
+
+  const isVideo = (file: UserFile) =>
+    /\.(mp4|mkv|webm)$/i.test(file.originalName);
 
   const loadFolderContents = (folderId: string | null) => {
     const validFolderId = folderId === null ? undefined : folderId;
@@ -69,15 +76,46 @@ export default function HomePage() {
   };
 
   const handleFileClick = (file: UserFile) => {
-    FileService.download(userId, [file.fileId])
-      .then((resp) => {
-        const blob = new Blob([resp], { type: file.contentType });
-        const url = URL.createObjectURL(blob);
-        setFullscreenImage(url);
-        setSelectedFile(file);
-        setOpenFullscreen(true);
-      })
-      .catch((e) => console.error('Failed to fetch file:', e));
+    const ext = file.originalName.split('.').pop()?.toLowerCase();
+    const mime = ext === 'png'  ? 'image/png'
+               : ext === 'jpg'  ? 'image/jpeg'
+               : ext === 'jpeg' ? 'image/jpeg'
+               : ext === 'gif'  ? 'image/gif'
+               : /\.(mp4)$/i.test(ext!) ? 'video/mp4'
+               : /\.(mkv)$/i.test(ext!) ? 'video/x-matroska'
+               : /\.(webm)$/i.test(ext!)? 'video/webm'
+               : '';
+  
+    if (isVideo(file)) {
+      FileService.stream(file.fileId, userId)
+        .then((resp) => {
+          const blob = mime
+            ? new Blob([resp], { type: mime })
+            : new Blob([resp]);
+          const url = URL.createObjectURL(blob);
+          setFullscreenVideo(url);
+          setSelectedFile(file);
+          setOpenVideoFullscreen(true);
+        })
+        .catch((e) => console.error('Failed to fetch video stream:', e));
+    } else {
+      FileService.download(userId, [file.fileId])
+        .then((resp) => {
+          const blob = mime
+            ? new Blob([resp], { type: mime })
+            : new Blob([resp]);
+          const url = URL.createObjectURL(blob);
+          setFullscreenImage(url);
+          setSelectedFile(file);
+          setOpenFullscreen(true);
+        })
+        .catch((e) => console.error('Failed to fetch file:', e));
+    }
+  };  
+
+  const handleCloseVideo = () => {
+    if (fullscreenVideo) URL.revokeObjectURL(fullscreenVideo);
+    setOpenVideoFullscreen(false);
   };
 
   const handleDownloadSelectedFiles = async () => {
@@ -91,7 +129,18 @@ export default function HomePage() {
   
       try {
         const resp = await FileService.download(userId, [fileId]);
-        const blob = new Blob([resp], { type: file.contentType });
+        const ext2 = file.originalName.split('.').pop()?.toLowerCase();
+        const mime2 = ext2 === 'png'  ? 'image/png'
+                    : ext2 === 'jpg'  ? 'image/jpeg'
+                    : ext2 === 'jpeg' ? 'image/jpeg'
+                    : ext2 === 'gif'  ? 'image/gif'
+                    : /\.(mp4)$/i.test(ext2!) ? 'video/mp4'
+                    : /\.(mkv)$/i.test(ext2!) ? 'video/x-matroska'
+                    : /\.(webm)$/i.test(ext2!)? 'video/webm'
+                    : '';
+        const blob = mime2
+          ? new Blob([resp], { type: mime2 })
+          : new Blob([resp]);
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -277,7 +326,27 @@ export default function HomePage() {
                   '&:hover': { bgcolor: '#e3f2fd', border: '2px solid #1976d2' },
                 }}
               >
-                <CardMedia component="img" height="60" image={file.base64Thumbnail} alt={file.originalName} sx={{ objectFit: 'contain' }} />
+                <Box position="relative">
+  <CardMedia
+    component="img"
+    height="60"
+    image={file.base64Thumbnail}
+    alt={file.originalName}
+    sx={{ objectFit: 'contain' }}
+  />
+  {isVideo(file) && (
+    <PlayCircleFilledIcon
+      sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        fontSize: 32,
+        color: 'rgba(255,255,255,0.8)',
+      }}
+    />
+  )}
+</Box>
                 <Typography noWrap>{file.originalName}</Typography>
               </Card>
             ))}
@@ -293,6 +362,42 @@ export default function HomePage() {
         <DialogActions>
           <Button onClick={handleDownload} startIcon={<DownloadIcon />}>Download</Button>
           <Button onClick={handleCloseFullscreen} startIcon={<CloseFullscreenIcon />}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openVideoFullscreen}
+        onClose={handleCloseVideo}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
+          {fullscreenVideo && (
+            <video
+              src={fullscreenVideo}
+              controls
+              autoPlay
+              style={{ maxWidth: '100%', maxHeight: '80vh' }}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              if (fullscreenVideo && selectedFile) {
+                const a = document.createElement('a');
+                a.href = fullscreenVideo;
+                a.download = selectedFile.originalName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              }
+            }}
+            startIcon={<DownloadIcon />}
+          >
+            Download
+          </Button>
+          <Button onClick={handleCloseVideo} startIcon={<CloseFullscreenIcon />}>Close</Button>
         </DialogActions>
       </Dialog>
     </div>
