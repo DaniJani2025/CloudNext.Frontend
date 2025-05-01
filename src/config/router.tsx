@@ -5,6 +5,7 @@ import LoginPage from '../pages/LoginPage';
 import RegistrationPage from '../pages/RegistrationPage';
 import RequestPasswordResetPage from '../pages/RequestPasswordResetPage';
 import VerificationComplete from '../pages/VerificationComplete';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 const routes = createBrowserRouter([
   {
@@ -12,8 +13,13 @@ const routes = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "/",
-        element: <HomePage />,
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: "/",
+            element: <HomePage />,
+          },
+        ],
       },
       {
         path: "/login",
