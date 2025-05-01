@@ -46,7 +46,7 @@ class FileService extends ApiService {
   
     try {
       const response = await this.api.get(url, config);
-      return response.data; // This will be a Blob
+      return response.data;
     } catch (error) {
       console.error(`STREAM ${url} failed:`, error);
       throw error;
