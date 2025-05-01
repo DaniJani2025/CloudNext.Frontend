@@ -27,21 +27,17 @@ out/
 .nuxt/
 build/
 
-# Environment variables
-.env
-.env.*.local
+# Environment variable overrides (local only)
 .env.local
+.env.*.local
+
+# Sensitive environment setups (ignored)
 .env.development.local
 .env.test.local
 .env.production.local
 
-# SSL certificates (local development)
-localhost-key.pem
-localhost-cert.pem
-
-#Vite Config file
-vite.config.*
-vite.config*/
+# Vite local config
+vite.config.local.ts
 
 # System files
 .DS_Store
