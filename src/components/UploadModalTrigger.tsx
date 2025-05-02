@@ -3,23 +3,49 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, 
 import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
 import JSZip from 'jszip';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import FolderService from '../services/FolderService';
 import StorageService from '../services/StorageService';
 import FileService from '../services/FileService';
 import { EXCLUDED_FILES } from '../constants/constants';
+import { supportedMimeTypes } from '../constants/constants';
+import React from 'react';
 
 export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: { parentFolderId: string | null, onUploadSuccess: () => void }) {
   const [open, setOpen] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [uploadMode, setUploadMode] = useState<'files' | 'folder' | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [rejectedFiles, setRejectedFiles] = useState<string[]>([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const userId = StorageService.getCurrentUser();
 
+  const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
   const handleFiles = (files: FileList | ArrayLike<File>) => {
     const fileArray = Array.from(files);
-    console.log('Selected Files:', fileArray);
-    setUploadedFiles(fileArray);
+    const allowed: File[] = [];
+    const rejected: string[] = [];
+  
+    fileArray.forEach((file) => {
+      const ext = file.name.split('.').pop()?.toLowerCase() || '';
+      if (supportedMimeTypes[ext]) {
+        allowed.push(file);
+      } else {
+        rejected.push(file.name);
+      }
+    });
+  
+    if (rejected.length) {
+      setRejectedFiles(rejected);
+      setOpenSnackbar(true);
+    }
+  
+    setUploadedFiles(allowed);
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -50,7 +76,8 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
   
     Array.from(folderFiles).forEach((file) => {
       const filename = file.name.toLowerCase();
-      if (EXCLUDED_FILES.includes(filename)) {
+      const ext = filename.split('.').pop() || '';
+      if (EXCLUDED_FILES.includes(filename) || !supportedMimeTypes[ext]) {
         return;
       }
 
@@ -206,6 +233,21 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity="warning"
+          sx={{ width: '100%' }}
+        >
+          These files were skipped: {rejectedFiles.join(', ')}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
