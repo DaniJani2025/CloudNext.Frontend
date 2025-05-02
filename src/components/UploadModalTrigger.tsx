@@ -9,7 +9,7 @@ import FolderService from '../services/FolderService';
 import StorageService from '../services/StorageService';
 import FileService from '../services/FileService';
 import { EXCLUDED_FILES } from '../constants/constants';
-import { supportedMimeTypes } from '../constants/constants';
+import { allowedUploadMimeTypes } from '../constants/constants';
 
 
 export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: { parentFolderId: string | null, onUploadSuccess: () => void }) {
@@ -33,7 +33,7 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
   
     fileArray.forEach((file) => {
       const ext = file.name.split('.').pop()?.toLowerCase() || '';
-      if (supportedMimeTypes[ext]) {
+      if (allowedUploadMimeTypes[ext]) {
         allowed.push(file);
       } else {
         rejected.push(file.name);
@@ -77,7 +77,7 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
     Array.from(folderFiles).forEach((file) => {
       const filename = file.name.toLowerCase();
       const ext = filename.split('.').pop() || '';
-      if (EXCLUDED_FILES.includes(filename) || !supportedMimeTypes[ext]) {
+      if (EXCLUDED_FILES.includes(filename) || !allowedUploadMimeTypes[ext]) {
         return;
       }
 
