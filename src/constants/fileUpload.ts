@@ -1,1 +1,0 @@
-export const EXCLUDED_FILES = ['desktop.ini', 'thumbs.db', '.ds_store'];

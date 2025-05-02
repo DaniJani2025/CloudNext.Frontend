@@ -6,7 +6,7 @@ import JSZip from 'jszip';
 import FolderService from '../services/FolderService';
 import StorageService from '../services/StorageService';
 import FileService from '../services/FileService';
-import { EXCLUDED_FILES } from '../constants/fileUpload';
+import { EXCLUDED_FILES } from '../constants/constants';
 
 export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: { parentFolderId: string | null, onUploadSuccess: () => void }) {
   const [open, setOpen] = useState(false);

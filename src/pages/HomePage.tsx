@@ -11,6 +11,7 @@ import FolderSidebar from '../components/FolderSidebar';
 import UploadModalTrigger from '../components/UploadModalTrigger';
 import NewFolderButton from '../components/NewFolderbutton';
 import { UserFile, UserFolder } from '../types/types';
+import { mimeTypes } from '../constants/constants';
 
 
 export default function HomePage() {
@@ -30,6 +31,11 @@ export default function HomePage() {
 
   const isVideo = (file: UserFile) =>
     /\.(mp4|mkv|webm)$/i.test(file.originalName);
+
+  function getMimeType(filename: string): string {
+    const ext = filename.split('.').pop()?.toLowerCase() || '';
+    return mimeTypes[ext] || '';
+  }
 
   const loadFolderContents = (folderId: string | null) => {
     const validFolderId = folderId === null ? undefined : folderId;
@@ -78,15 +84,7 @@ export default function HomePage() {
   };
 
   const handleFileClick = (file: UserFile) => {
-    const ext = file.originalName.split('.').pop()?.toLowerCase();
-    const mime = ext === 'png'  ? 'image/png'
-               : ext === 'jpg'  ? 'image/jpeg'
-               : ext === 'jpeg' ? 'image/jpeg'
-               : ext === 'gif'  ? 'image/gif'
-               : /\.(mp4)$/i.test(ext!) ? 'video/mp4'
-               : /\.(mkv)$/i.test(ext!) ? 'video/x-matroska'
-               : /\.(webm)$/i.test(ext!)? 'video/webm'
-               : '';
+    const mime = getMimeType(file.originalName);
   
     if (isVideo(file)) {
       FileService.stream(file.fileId, userId)
@@ -131,15 +129,8 @@ export default function HomePage() {
   
       try {
         const resp = await FileService.download(userId, [fileId]);
-        const ext2 = file.originalName.split('.').pop()?.toLowerCase();
-        const mime2 = ext2 === 'png'  ? 'image/png'
-                    : ext2 === 'jpg'  ? 'image/jpeg'
-                    : ext2 === 'jpeg' ? 'image/jpeg'
-                    : ext2 === 'gif'  ? 'image/gif'
-                    : /\.(mp4)$/i.test(ext2!) ? 'video/mp4'
-                    : /\.(mkv)$/i.test(ext2!) ? 'video/x-matroska'
-                    : /\.(webm)$/i.test(ext2!)? 'video/webm'
-                    : '';
+        const mime2 = getMimeType(file.originalName);
+        
         const blob = mime2
           ? new Blob([resp], { type: mime2 })
           : new Blob([resp]);
