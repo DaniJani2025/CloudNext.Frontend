@@ -26,6 +26,7 @@ export default function HomePage() {
   const [refreshSidebar, setRefreshSidebar] = useState(false);
   const [fullscreenVideo, setFullscreenVideo]     = useState<string | null>(null);
   const [openVideoFullscreen, setOpenVideoFullscreen] = useState<boolean>(false);
+  const [fileName, setFileName] = useState<string>('');
 
   const userId = StorageService.getCurrentUser();
 
@@ -94,11 +95,12 @@ export default function HomePage() {
             : new Blob([resp]);
           const url = URL.createObjectURL(blob);
           setFullscreenVideo(url);
+          setFileName(file.originalName);
           setSelectedFile(file);
           setOpenVideoFullscreen(true);
         })
         .catch((e) => console.error('Failed to fetch video stream:', e));
-    } else {
+    }  else if (mime.startsWith('image/')) {
       FileService.download(userId, [file.fileId])
         .then((resp) => {
           const blob = mime
@@ -106,10 +108,16 @@ export default function HomePage() {
             : new Blob([resp]);
           const url = URL.createObjectURL(blob);
           setFullscreenImage(url);
+          setFileName(file.originalName);
           setSelectedFile(file);
           setOpenFullscreen(true);
         })
         .catch((e) => console.error('Failed to fetch file:', e));
+    } else {
+      setFullscreenImage(file.base64Thumbnail!);
+      setFileName(file.originalName);
+      setSelectedFile(file);
+      setOpenFullscreen(true);
     }
   };  
 
@@ -349,22 +357,33 @@ export default function HomePage() {
       </Box>
 
       <Dialog open={openFullscreen} onClose={handleCloseFullscreen} maxWidth="lg" fullWidth>
-        <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
-          {fullscreenImage && <img src={fullscreenImage} alt="" style={{ maxWidth: '100%', maxHeight: '80vh' }} />}
+        <DialogContent sx={{ p: 0, display: 'flex', justifyContent: 'center' }}>
+          {fullscreenImage && (
+            <img
+              src={fullscreenImage}
+              alt=""
+              style={{ maxWidth: '100%', maxHeight: '80vh' }}
+            />
+          )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDownload} startIcon={<DownloadIcon />}>Download</Button>
-          <Button onClick={handleCloseFullscreen} startIcon={<CloseFullscreenIcon />}>Close</Button>
+
+        <DialogActions sx={{ flexDirection: 'column', alignItems: 'center', py: 1 }}>
+          <Typography variant="subtitle1" sx={{ wordBreak: 'break-all', mb: 1 }}>
+            {fileName}
+          </Typography>
+          <Box>
+            <Button onClick={handleDownload} startIcon={<DownloadIcon />}>
+              Download
+            </Button>
+            <Button onClick={handleCloseFullscreen} startIcon={<CloseFullscreenIcon />}>
+              Close
+            </Button>
+          </Box>
         </DialogActions>
       </Dialog>
 
-      <Dialog
-        open={openVideoFullscreen}
-        onClose={handleCloseVideo}
-        maxWidth="lg"
-        fullWidth
-      >
-        <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Dialog open={openVideoFullscreen} onClose={handleCloseVideo} maxWidth="lg" fullWidth>
+        <DialogContent sx={{ p: 0, display: 'flex', justifyContent: 'center' }}>
           {fullscreenVideo && (
             <video
               src={fullscreenVideo}
@@ -374,23 +393,31 @@ export default function HomePage() {
             />
           )}
         </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              if (fullscreenVideo && selectedFile) {
-                const a = document.createElement('a');
-                a.href = fullscreenVideo;
-                a.download = selectedFile.originalName;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-              }
-            }}
-            startIcon={<DownloadIcon />}
-          >
-            Download
-          </Button>
-          <Button onClick={handleCloseVideo} startIcon={<CloseFullscreenIcon />}>Close</Button>
+
+        <DialogActions sx={{ flexDirection: 'column', alignItems: 'center', py: 1 }}>
+          <Typography variant="subtitle1" sx={{ wordBreak: 'break-all', mb: 1 }}>
+            {fileName}
+          </Typography>
+          <Box>
+            <Button
+              onClick={() => {
+                if (fullscreenVideo && selectedFile) {
+                  const a = document.createElement('a');
+                  a.href = fullscreenVideo;
+                  a.download = selectedFile.originalName;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                }
+              }}
+              startIcon={<DownloadIcon />}
+            >
+              Download
+            </Button>
+            <Button onClick={handleCloseVideo} startIcon={<CloseFullscreenIcon />}>
+              Close
+            </Button>
+          </Box>
         </DialogActions>
       </Dialog>
     </div>
