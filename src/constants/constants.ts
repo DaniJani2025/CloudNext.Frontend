@@ -7,7 +7,6 @@ export const previewableMimeTypes: Record<string, string> = {
     jpeg: 'image/jpeg',
     bmp:  'image/bmp',
     gif:  'image/gif',
-    tiff: 'image/tiff',
     webp: 'image/webp',
 
     // — Video —
@@ -25,6 +24,7 @@ export const allowedUploadMimeTypes: Record<string, string> = {
     bmp:  'image/bmp',
     gif:  'image/gif',
     tiff: 'image/tiff',
+    tif:  'image/tiff',
     webp: 'image/webp',
     avif: 'image/avif',
     heic: 'image/heic',
