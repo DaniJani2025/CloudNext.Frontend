@@ -56,6 +56,8 @@ export default function HomePage() {
   };
 
   const getHome = () => {
+      setFolderHistory([]);
+
       FolderService.getAll(userId)
         .then(setFolders)
         .catch((error) => console.error('Failed to fetch folders:', error));
