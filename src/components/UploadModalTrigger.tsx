@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Box, Typography } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
@@ -10,7 +10,7 @@ import StorageService from '../services/StorageService';
 import FileService from '../services/FileService';
 import { EXCLUDED_FILES } from '../constants/constants';
 import { supportedMimeTypes } from '../constants/constants';
-import React from 'react';
+
 
 export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: { parentFolderId: string | null, onUploadSuccess: () => void }) {
   const [open, setOpen] = useState(false);
