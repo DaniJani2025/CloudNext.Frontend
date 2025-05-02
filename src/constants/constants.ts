@@ -1,13 +1,20 @@
 export const EXCLUDED_FILES = ['desktop.ini', 'thumbs.db', '.ds_store'];
 
 export const previewableMimeTypes: Record<string, string> = {
-    png: 'image/png',
-    jpg: 'image/jpeg',
+    // — Images —
+    png:  'image/png',
+    jpg:  'image/jpeg',
     jpeg: 'image/jpeg',
-    gif: 'image/gif',
-    mp4: 'video/mp4',
-    mkv: 'video/x-matroska',
-    webm: 'video/webm',
+    bmp:  'image/bmp',
+    gif:  'image/gif',
+    tiff: 'image/tiff',
+    webp: 'image/webp',
+
+    // — Video —
+    mp4:  'video/mp4',
+    mov:  'video/quicktime',
+    avi:  'video/x-msvideo',
+    mkv:  'video/x-matroska',
   };
 
 export const allowedUploadMimeTypes: Record<string, string> = {
