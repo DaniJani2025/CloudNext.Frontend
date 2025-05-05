@@ -11,8 +11,6 @@ export const previewableMimeTypes: Record<string, string> = {
 
     // — Video —
     mp4:  'video/mp4',
-    mov:  'video/quicktime',
-    avi:  'video/x-msvideo',
     mkv:  'video/x-matroska',
   };
 
