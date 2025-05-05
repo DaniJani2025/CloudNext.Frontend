@@ -115,7 +115,8 @@ export default class ApiService {
           processQueue(refreshError, null);
 
           StorageService.removeUserDetails();
-
+          
+          window.location.href = '/login';
           return Promise.reject(refreshError);
         } finally {
           isRefreshing = false;
