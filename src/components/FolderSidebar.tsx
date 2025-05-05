@@ -52,6 +52,41 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
     );
   };
 
+  const renderFolderNode = (folder: UserFolder, depth = 0) => {
+    const isExpanded = expandedFolders.includes(folder.folderId);
+  
+    return (
+      <div key={folder.folderId}>
+        <ListItemButton
+          sx={{ pl: 2 + depth * 2 }}
+          onClick={() => handleFolderClick(folder.folderId)}
+        >
+          <Folder sx={{ mr: 1 }} />
+          <ListItemText primary={folder.name} />
+  
+          {folder.subFolders?.length > 0 && (
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                handleToggleCollapse(folder.folderId);
+              }}
+            >
+              {isExpanded ? <ArrowDownward /> : <ArrowForward />}
+            </IconButton>
+          )}
+        </ListItemButton>
+  
+        {folder.subFolders?.length > 0 && (
+          <Collapse in={isExpanded}>
+            {folder.subFolders.map((child) =>
+              renderFolderNode(child, depth + 1)
+            )}
+          </Collapse>
+        )}
+      </div>
+    );
+  };
+
   return (
     <Box sx={{ width: 250, borderRight: '1px solid #ccc', padding: 2 }}>
       <ListItemButton onClick={getHome} sx={{ padding: 1 }}>
@@ -61,38 +96,7 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
 
       <List>
         {folderStructure.length > 0 ? (
-          folderStructure.map((folder: UserFolder) => (
-            <div key={folder.folderId}>
-              <ListItemButton onClick={() => handleFolderClick(folder.folderId)}>
-                <Folder sx={{ marginRight: 1 }} />
-                <ListItemText primary={folder.name} />
-
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleToggleCollapse(folder.folderId);
-                  }}
-                >
-                  {expandedFolders.includes(folder.folderId) ? <ArrowDownward /> : <ArrowForward />}
-                </IconButton>
-              </ListItemButton>
-
-              <Collapse in={expandedFolders.includes(folder.folderId)}>
-                <List component="div" disablePadding>
-                  {folder.subFolders &&
-                    folder.subFolders.map((subFolder) => (
-                      <ListItemButton
-                        key={subFolder.folderId}
-                        sx={{ paddingLeft: 4 }}
-                        onClick={() => handleFolderClick(subFolder.folderId)}
-                      >
-                        <ListItemText primary={subFolder.name} />
-                      </ListItemButton>
-                    ))}
-                </List>
-              </Collapse>
-            </div>
-          ))
+          folderStructure.map((rootFolder) => renderFolderNode(rootFolder))
         ) : (
           <ListItem>
             <ListItemText primary="No folders available." />
