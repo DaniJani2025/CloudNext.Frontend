@@ -1,21 +1,29 @@
 export const EXCLUDED_FILES = ['desktop.ini', 'thumbs.db', '.ds_store'];
 
-export const mimeTypes: Record<string, string> = {
-    png: 'image/png',
-    jpg: 'image/jpeg',
-    jpeg: 'image/jpeg',
-    gif: 'image/gif',
-    mp4: 'video/mp4',
-    mkv: 'video/x-matroska',
-    webm: 'video/webm',
-  };
-  
-  export const supportedMimeTypes: Record<string, string> = {
-    // images & video
+export const previewableMimeTypes: Record<string, string> = {
+    // — Images —
     png:  'image/png',
-    jpg:  'image/jpg',
+    jpg:  'image/jpeg',
     jpeg: 'image/jpeg',
+    bmp:  'image/bmp',
     gif:  'image/gif',
+    webp: 'image/webp',
+
+    // — Video —
+    mp4:  'video/mp4',
+    mkv:  'video/x-matroska',
+  };
+
+export const allowedUploadMimeTypes: Record<string, string> = {
+    // — Images —
+    png:  'image/png',
+    jpg:  'image/jpeg',
+    jpeg: 'image/jpeg',
+    bmp:  'image/bmp',
+    gif:  'image/gif',
+    tiff: 'image/tiff',
+    tif:  'image/tiff',
+    webp: 'image/webp',
     avif: 'image/avif',
     heic: 'image/heic',
     heif: 'image/heif',
@@ -23,41 +31,44 @@ export const mimeTypes: Record<string, string> = {
     jfif: 'image/jpeg',
     svg:  'image/svg+xml',
   
+    // — Video —
     mp4:  'video/mp4',
+    mov:  'video/quicktime',
+    avi:  'video/x-msvideo',
     mkv:  'video/x-matroska',
     webm: 'video/webm',
   
-    // documents
+    // — Documents —
     pdf:  'application/pdf',
     docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     doc:  'application/msword',
     odt:  'application/vnd.oasis.opendocument.text',
     rtf:  'application/rtf',
   
-    // spreadsheets
+    // — Spreadsheets —
     xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     xls:  'application/vnd.ms-excel',
     csv:  'text/csv',
     ods:  'application/vnd.oasis.opendocument.spreadsheet',
   
-    // presentations
+    // — Presentations —
     pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     ppt:  'application/vnd.ms-powerpoint',
     odp:  'application/vnd.oasis.opendocument.presentation',
   
-    // archives
+    // — Archives —
     zip:  'application/zip',
     rar:  'application/vnd.rar',
     '7z':  'application/x-7z-compressed',
     tar:  'application/x-tar',
     gz:   'application/gzip',
   
-    // text & markdown
+    // — Text / Markdown —
     txt:  'text/plain',
     log:  'text/plain',
     md:   'text/markdown',
   
-    // code
+    // — Code —
     json: 'application/json',
     xml:  'application/xml',
     html: 'text/html',
@@ -68,8 +79,9 @@ export const mimeTypes: Record<string, string> = {
     java: 'text/x-java-source',
     py:   'text/x-python',
   
-    // audio
+    // — Audio —
     mp3:  'audio/mpeg',
     wav:  'audio/wav',
     flac: 'audio/flac',
   };
+ 

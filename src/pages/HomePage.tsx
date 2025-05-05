@@ -11,7 +11,7 @@ import FolderSidebar from '../components/FolderSidebar';
 import UploadModalTrigger from '../components/UploadModalTrigger';
 import NewFolderButton from '../components/NewFolderbutton';
 import { UserFile, UserFolder } from '../types/types';
-import { mimeTypes } from '../constants/constants';
+import { previewableMimeTypes } from '../constants/constants';
 
 
 export default function HomePage() {
@@ -35,7 +35,7 @@ export default function HomePage() {
 
   function getMimeType(filename: string): string {
     const ext = filename.split('.').pop()?.toLowerCase() || '';
-    return mimeTypes[ext] || '';
+    return previewableMimeTypes[ext] || '';
   }
 
   const loadFolderContents = (folderId: string | null) => {
