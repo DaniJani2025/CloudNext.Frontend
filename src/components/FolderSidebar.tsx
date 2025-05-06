@@ -16,6 +16,7 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
   const { userId, onFolderClick, refreshTrigger, getHome } = props;
   const [folderStructure, setFolderStructure] = useState<UserFolder[]>([]);
   const [expandedFolders, setExpandedFolders] = useState<string[]>([]);
+  const [homeExpanded, setHomeExpanded] = useState(false);
 
   const loadFolderStructure = () => {
     if (userId) {
@@ -89,20 +90,36 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
 
   return (
     <Box sx={{ width: 250, borderRight: '1px solid #ccc', padding: 2 }}>
-      <ListItemButton onClick={getHome} sx={{ padding: 1 }}>
+      <ListItemButton
+        onClick={() => {
+          getHome();
+          setHomeExpanded((prev) => !prev);
+        }}
+        sx={{ padding: 1 }}
+      >
         <Home sx={{ marginRight: 1 }} />
         <ListItemText primary="Home" />
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            setHomeExpanded((prev) => !prev);
+          }}
+        >
+          {homeExpanded ? <ArrowDownward /> : <ArrowForward />}
+        </IconButton>
       </ListItemButton>
 
-      <List>
-        {folderStructure.length > 0 ? (
-          folderStructure.map((rootFolder) => renderFolderNode(rootFolder))
-        ) : (
-          <ListItem>
-            <ListItemText primary="No folders available." />
-          </ListItem>
-        )}
-      </List>
+      <Collapse in={homeExpanded}>
+        <List>
+          {folderStructure.length > 0 ? (
+            folderStructure.map((rootFolder) => renderFolderNode(rootFolder))
+          ) : (
+            <ListItem>
+              <ListItemText primary="No folders available." />
+            </ListItem>
+          )}
+        </List>
+      </Collapse>
     </Box>
   );
 };
