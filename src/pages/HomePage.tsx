@@ -12,6 +12,7 @@ import UploadModalTrigger from '../components/UploadModalTrigger';
 import NewFolderButton from '../components/NewFolderbutton';
 import { UserFile, UserFolder } from '../types/types';
 import { previewableMimeTypes } from '../constants/constants';
+import React from 'react';
 
 
 export default function HomePage() {
@@ -27,6 +28,7 @@ export default function HomePage() {
   const [fullscreenVideo, setFullscreenVideo]     = useState<string | null>(null);
   const [openVideoFullscreen, setOpenVideoFullscreen] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string>('');
+  const [currentPath, setCurrentPath] = useState<UserFolder[]>([]);
 
   const userId = StorageService.getCurrentUser();
 
@@ -37,6 +39,17 @@ export default function HomePage() {
     const ext = filename.split('.').pop()?.toLowerCase() || '';
     return previewableMimeTypes[ext] || '';
   }
+
+  const buildPathToFolder = (folderId: string, current: UserFolder, path: UserFolder[] = []): UserFolder[] | null => {
+    if (current.folderId === folderId) return [...path, current];
+  
+    for (const child of current.subFolders || []) {
+      const result = buildPathToFolder(folderId, child, [...path, current]);
+      if (result) return result;
+    }
+  
+    return null;
+  };  
 
   const loadFolderContents = (folderId: string | null) => {
     const validFolderId = folderId === null ? undefined : folderId;
@@ -58,12 +71,34 @@ export default function HomePage() {
   }, []);
 
   const handleFolderClick = (folderId: string) => {
+    const currentFolderId = folderHistory[folderHistory.length - 1] ?? null;
+    if (folderId === currentFolderId) return;
+
     setFolderHistory((prev) => [...prev, folderId]);
     loadFolderContents(folderId);
+  
+    FolderService.getStructure(userId).then((structure) => {
+      const path = buildPathToFolder(folderId, {
+        folderId: structure.folderId,
+        name: "Home",
+        virtualPath: '',
+        subFolders: structure.subFolders,
+      });
+  
+      if (path) setCurrentPath(path);
+    });
   };
 
   const getHome = () => {
       setFolderHistory([]);
+      setCurrentPath([
+        {
+          folderId: null,
+          name: "Home",
+          virtualPath: "",
+          subFolders: [],
+        },
+      ]);
 
       FolderService.getAll(userId)
         .then(setFolders)
@@ -289,6 +324,20 @@ export default function HomePage() {
       <Box display="flex">
         <FolderSidebar userId={userId!} onFolderClick={handleFolderClick} refreshTrigger={refreshSidebar} getHome={getHome} />
         <Box flex={1} display="flex" flexDirection="column" gap={4} flexWrap="wrap" pl={2} mb={4}>
+
+          <Box display="flex" alignItems="center" gap={1} mb={2} pl={1}>
+            {currentPath.map((folder, idx) => (
+              <React.Fragment key={folder.folderId}>
+                <Typography
+                  sx={{ cursor: 'pointer', color: '#1976d2' }}
+                  onClick={() => handleFolderClick(folder.folderId)}
+                >
+                  {idx === 0 ? 'Home' : folder.name}
+                </Typography>
+                {idx < currentPath.length - 1 && <Typography>/</Typography>}
+              </React.Fragment>
+            ))}
+          </Box>
 
           <Box display="flex" gap={4} flexWrap="wrap" mb={4}>
             {folders.map((f) => (

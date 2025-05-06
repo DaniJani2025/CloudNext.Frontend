@@ -9,8 +9,9 @@ export interface UserFile {
   }
   
   export interface UserFolder {
-    folderId: string;
+    folderId: string | null;
     name: string;
+    virtualPath: string;
     subFolders: UserFolder[];
   }
   
