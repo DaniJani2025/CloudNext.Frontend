@@ -291,35 +291,56 @@ export default function HomePage() {
         </Box>
       </Box>
 
-      {(selectedFiles.length || selectedFolders.length) > 0 && (
-        <Box
-          display="flex" alignItems="center" justifyContent="space-between"
-          sx={{ bgcolor: '#e3f2fd', border: '1px solid #90caf9', borderRadius: 2, px: 2, py: 1, mb: 2 }}
-        >
-          <Typography>
-            {selectedFiles.length + selectedFolders.length}{' '}
-            {(selectedFiles.length + selectedFolders.length) === 1 ? 'item' : 'items'} selected
-          </Typography>
-          <Box display="flex" gap={2}>
-            {selectedFiles.length > 0 && (
-              <Button size="small" variant="contained" onClick={handleDownloadSelectedFiles}>
-                Download Files
-              </Button>
-            )}
-            {selectedFolders.length > 0 && (
-              <Button size="small" variant="contained" onClick={handleDownloadSelectedFolders}>
-                Download Folder
-              </Button>
-            )}
-            <Button
-              size="small" variant="outlined"
-              onClick={() => { setSelectedFiles([]); setSelectedFolders([]); }}
-            >
-              Clear Selection
-            </Button>
-          </Box>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{
+          bgcolor: '#e3f2fd',
+          border: '1px solid #90caf9',
+          borderRadius: 2,
+          px: 2,
+          py: 1,
+          mb: 2,
+        }}
+      >
+        <Typography>
+          {selectedFiles.length + selectedFolders.length} {' '}
+          {(selectedFiles.length + selectedFolders.length) === 1 ? 'item' : 'items'} selected
+        </Typography>
+
+        <Box display="flex" gap={2}>
+          <Button
+            size="small"
+            variant="contained"
+            disabled={selectedFiles.length === 0}
+            onClick={handleDownloadSelectedFiles}
+          >
+            Download Files
+          </Button>
+
+          <Button
+            size="small"
+            variant="contained"
+            disabled={selectedFolders.length === 0}
+            onClick={handleDownloadSelectedFolders}
+          >
+            Download Folder
+          </Button>
+
+          <Button
+            size="small"
+            variant="outlined"
+            disabled={selectedFiles.length === 0 && selectedFolders.length === 0}
+            onClick={() => {
+              setSelectedFiles([]);
+              setSelectedFolders([]);
+            }}
+          >
+            Clear Selection
+          </Button>
         </Box>
-      )}
+      </Box>
 
       <Box display="flex">
         <FolderSidebar userId={userId!} onFolderClick={handleFolderClick} refreshTrigger={refreshSidebar} getHome={getHome} />
@@ -330,7 +351,13 @@ export default function HomePage() {
               <React.Fragment key={folder.folderId}>
                 <Typography
                   sx={{ cursor: 'pointer', color: '#1976d2' }}
-                  onClick={() => handleFolderClick(folder.folderId)}
+                  onClick={() => {
+                    handleFolderClick(folder.folderId);
+                      if (idx === 0) {
+                        getHome();
+                      }
+                    }
+                  }
                 >
                   {idx === 0 ? 'Home' : folder.name}
                 </Typography>
