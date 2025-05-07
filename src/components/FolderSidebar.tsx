@@ -17,6 +17,7 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
   const [folderStructure, setFolderStructure] = useState<UserFolder[]>([]);
   const [expandedFolders, setExpandedFolders] = useState<string[]>([]);
   const [homeExpanded, setHomeExpanded] = useState(false);
+  const [hasFetchedHome, setHasFetchedHome] = useState(false);
 
   const loadFolderStructure = () => {
     if (userId) {
@@ -60,7 +61,11 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
       <div key={folder.folderId}>
         <ListItemButton
           sx={{ pl: 2 + depth * 2 }}
-          onClick={() => handleFolderClick(folder.folderId)}
+          onClick={() => {
+            setHasFetchedHome(false);
+            handleFolderClick(folder.folderId);
+            handleToggleCollapse(folder.folderId);
+          }}
         >
           <Folder sx={{ mr: 1 }} />
           <ListItemText primary={folder.name} />
@@ -92,7 +97,10 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
     <Box sx={{ width: 250, borderRight: '1px solid #ccc', padding: 2 }}>
       <ListItemButton
         onClick={() => {
-          getHome();
+          if (!hasFetchedHome) {
+            getHome();
+            setHasFetchedHome(true);
+          }
           setHomeExpanded((prev) => !prev);
         }}
         sx={{ padding: 1 }}
