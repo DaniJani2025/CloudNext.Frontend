@@ -352,9 +352,13 @@ export default function HomePage() {
                 <Typography
                   sx={{ cursor: 'pointer', color: '#1976d2' }}
                   onClick={() => {
-                    handleFolderClick(folder.folderId);
                       if (idx === 0) {
-                        getHome();
+                        if (currentPath.length > 1) {
+                          getHome();
+                        }
+                        handleFolderClick(folder.folderId);
+                      } else {
+                        handleFolderClick(folder.folderId);
                       }
                     }
                   }
