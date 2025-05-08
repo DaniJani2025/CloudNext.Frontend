@@ -6,6 +6,7 @@ import RegistrationPage from '../pages/RegistrationPage';
 import RequestPasswordResetPage from '../pages/RequestPasswordResetPage';
 import VerificationComplete from '../pages/VerificationComplete';
 import ProtectedRoute from '../components/ProtectedRoute';
+import ProfilePage from '../pages/ProfilePage';
 
 const routes = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const routes = createBrowserRouter([
       {
         path: "/verification-complete",
         element: <VerificationComplete />,
+      },
+      {
+        path: "/profile",
+        element: <ProfilePage />,
       },
     ],
   },
