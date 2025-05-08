@@ -51,12 +51,16 @@ export default class ApiService {
 
         const originalRequest = error.config;
         if (originalRequest._retry || originalRequest.url.includes('refresh-token')) {
+          StorageService.removeUserDetails();
+          window.location.href = '/login';
           return Promise.reject(error);
         }
 
         const tokenExpiry = StorageService.getTokenExpiry();
         const isTokenExpired = tokenExpiry && new Date(tokenExpiry) <= new Date();
         if (!isTokenExpired) {
+          StorageService.removeUserDetails();
+          window.location.href = '/login';
           return Promise.reject(error);
         }
 
