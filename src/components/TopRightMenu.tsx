@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Menu, MenuItem, Box } from '@mui/material';
+import { Box, Menu, MenuItem, Avatar, ListItemIcon, Typography, Tooltip, IconButton } from '@mui/material';
+import { Home as HomeIcon, Logout as LogoutIcon, Person as PersonIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import StorageService from '../services/StorageService';
 import UserService from '../services/UserService';
 
 const TopRightMenu = () => {
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [userDisplayName, setUserDisplayName] = useState('');
     const navigate = useNavigate();
 
@@ -14,7 +15,7 @@ const TopRightMenu = () => {
         setUserDisplayName(displayName || 'Guest');
     }, []);
 
-    const handleMenuOpen = (event: { currentTarget: React.SetStateAction<null>; }) => {
+    const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
@@ -32,29 +33,76 @@ const TopRightMenu = () => {
         navigate('/login');
     };
 
+    const handleProfileNavigate = () => {
+        navigate('/profile');
+    };
+
+    const handleHomeNavigate = () => {
+        navigate('/');
+    };
+
     return (
         <Box sx={{ position: 'absolute', top: 10, right: 10 }}>
-            <Button
-                onClick={handleMenuOpen}
-                variant="contained"
-                color="primary"
-                sx={{
-                    borderRadius: '50%',
-                    padding: '8px 16px',
-                    minWidth: '40px',
-                    height: '40px',
-                }}
-            >
-                {userDisplayName}
-            </Button>
+            <Tooltip title="Profile & settings">
+                <IconButton onClick={handleMenuOpen} sx={{ p: 0 }}>
+                    <Avatar
+                    sx={{
+                        bgcolor: '#1976d2',
+                        color: 'white',
+                        width: 42,
+                        height: 42,
+                        fontSize: 20,
+                        fontWeight: 500,
+                    }}
+                    >
+                    {userDisplayName[0]?.toUpperCase() || 'U'}
+                    </Avatar>
+                </IconButton>
+            </Tooltip>
 
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
+                slotProps={{
+                    paper: {
+                      elevation: 4,
+                      sx: {
+                        mt: 1.5,
+                        minWidth: 180,
+                      },
+                    },
+                }}
             >
-                <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem onClick={() => {
+                    handleProfileNavigate();
+                    handleMenuClose();
+                }}>
+                    <ListItemIcon>
+                        <PersonIcon fontSize="small" />
+                    </ListItemIcon>
+                    <Typography variant="inherit">Profile</Typography>
+                </MenuItem>
+
+                <MenuItem onClick={() => {
+                    handleHomeNavigate();
+                    handleMenuClose();
+                }}>
+                    <ListItemIcon>
+                        <HomeIcon fontSize="small" />
+                    </ListItemIcon>
+                    <Typography variant="inherit">Home</Typography>
+                </MenuItem>
+
+                <MenuItem onClick={() => {
+                    handleLogout();
+                    handleMenuClose();
+                }}>
+                    <ListItemIcon>
+                        <LogoutIcon fontSize="small" />
+                    </ListItemIcon>
+                    <Typography variant="inherit">Logout</Typography>
+                </MenuItem>
             </Menu>
         </Box>
     );
