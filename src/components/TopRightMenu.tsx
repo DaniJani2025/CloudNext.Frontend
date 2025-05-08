@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Menu, MenuItem, Avatar, ListItemIcon, Typography, Tooltip, IconButton } from '@mui/material';
+import { Box, Menu, MenuItem, Avatar, ListItemIcon, Typography, Tooltip, IconButton } from '@mui/material';
 import { Home as HomeIcon, Logout as LogoutIcon, Person as PersonIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import StorageService from '../services/StorageService';
