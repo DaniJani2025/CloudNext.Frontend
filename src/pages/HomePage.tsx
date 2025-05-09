@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Folder, ArrowBack, Download as DownloadIcon, CloseFullscreen as CloseFullscreenIcon, Sort as SortIcon } from '@mui/icons-material';
-import { Box, Typography, Card, CardMedia, IconButton, Dialog, DialogActions, DialogContent, Button } from '@mui/material';
+import { Box, Typography, Card, CardMedia, IconButton, Dialog, DialogActions, DialogContent, Button, Tooltip } from '@mui/material';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import JSZip from 'jszip';
 
@@ -387,7 +387,20 @@ export default function HomePage() {
                 }}
               >
                 <Folder sx={{ fontSize: 60, color: '#1976d2' }} />
-                <Typography noWrap>{f.name}</Typography>
+                <Tooltip title={f.name}>
+                  <Typography
+                    noWrap
+                    sx={{
+                      maxWidth: '100%',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      textAlign: 'center',
+                    }}
+                  >
+                    {f.name}
+                  </Typography>
+                </Tooltip>
               </Box>
             ))}
           </Box>
