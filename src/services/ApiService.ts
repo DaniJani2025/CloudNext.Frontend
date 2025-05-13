@@ -49,6 +49,10 @@ export default class ApiService {
           return Promise.reject(error);
         }
 
+        if (!StorageService.isLoggedIn() || !StorageService.getAccessToken()) {
+          return Promise.reject(error);
+        }
+
         const originalRequest = error.config;
         if (originalRequest._retry || originalRequest.url.includes('refresh-token')) {
           return Promise.reject(error);
