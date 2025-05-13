@@ -82,18 +82,23 @@ const RegistrationPage = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 12 }}>
-      <Card elevation={4}>
+    <Container maxWidth="sm" sx={{ mt: 10 }}>
+      <Card elevation={6} sx={{ p: 3 }}>
         <CardContent>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <Typography variant="h4" gutterBottom>
-              Register
+          <Box display="flex" flexDirection="column" alignItems="center" textAlign="center">
+            <Typography variant="h5" color="primary" gutterBottom>
+              Welcome to CloudNext
             </Typography>
+            <Typography variant="h4" gutterBottom sx={{ mt: 1 }}>
+              Create Your Account
+            </Typography>
+
             {error && (
               <Typography color="error" sx={{ mb: 2 }}>
                 {error}
               </Typography>
             )}
+
             <TextField
               label="Email"
               variant="outlined"
@@ -104,6 +109,7 @@ const RegistrationPage = () => {
               error={!!emailError}
               helperText={emailError}
             />
+
             <FormControl fullWidth variant="outlined" margin="normal" error={!!passwordError}>
               <InputLabel htmlFor="password">Password</InputLabel>
               <OutlinedInput
@@ -113,10 +119,7 @@ const RegistrationPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
+                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -129,11 +132,12 @@ const RegistrationPage = () => {
                 }}
               />
               {passwordError && (
-                <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '4px' }}>
+                <Typography variant="caption" color="error" sx={{ mt: 1 }}>
                   {passwordError}
-                </div>
+                </Typography>
               )}
             </FormControl>
+
             <FormControl fullWidth variant="outlined" margin="normal" error={!!confirmPasswordError}>
               <InputLabel htmlFor="confirm-password">Confirm Password</InputLabel>
               <OutlinedInput
@@ -143,10 +147,7 @@ const RegistrationPage = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      edge="end"
-                    >
+                    <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
                       {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -159,11 +160,12 @@ const RegistrationPage = () => {
                 }}
               />
               {confirmPasswordError && (
-                <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '4px' }}>
+                <Typography variant="caption" color="error" sx={{ mt: 1 }}>
                   {confirmPasswordError}
-                </div>
+                </Typography>
               )}
             </FormControl>
+
             <Button
               variant="contained"
               fullWidth
@@ -174,14 +176,12 @@ const RegistrationPage = () => {
               Register
             </Button>
 
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="body2" color="textSecondary">
-                Already registered?{' '}
-                <Link component={RouterLink} to="/login" variant="body2">
-                  Sign in here
-                </Link>
-              </Typography>
-            </Box>
+            <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
+              Already registered?{' '}
+              <Link component={RouterLink} to="/login" variant="body2">
+                Sign in here
+              </Link>
+            </Typography>
           </Box>
         </CardContent>
       </Card>

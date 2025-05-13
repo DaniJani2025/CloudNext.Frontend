@@ -66,18 +66,23 @@ const LoginPage = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 12 }}>
-      <Card elevation={4}>
+    <Container maxWidth="sm" sx={{ mt: 10 }}>
+      <Card elevation={6} sx={{ p: 3 }}>
         <CardContent>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <Typography variant="h4" gutterBottom>
+          <Box display="flex" flexDirection="column" alignItems="center" textAlign="center">
+            <Typography variant="h5" color="primary" gutterBottom>
+              Sign in to CloudNext
+            </Typography>
+            <Typography variant="h4" gutterBottom sx={{ mt: 1 }}>
               Login
             </Typography>
+
             {error && (
               <Typography color="error" sx={{ mb: 2 }}>
                 {error}
               </Typography>
             )}
+
             <TextField
               label="Email"
               variant="outlined"
@@ -86,6 +91,7 @@ const LoginPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+
             <FormControl fullWidth variant="outlined" margin="normal">
               <InputLabel htmlFor="password">Password</InputLabel>
               <OutlinedInput
@@ -95,10 +101,7 @@ const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
+                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -111,6 +114,7 @@ const LoginPage = () => {
                 }}
               />
             </FormControl>
+
             <Button
               variant="contained"
               fullWidth
@@ -121,14 +125,12 @@ const LoginPage = () => {
               Login
             </Button>
 
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="body2" color="textSecondary">
-                Not registered yet?{' '}
-                <Link component={RouterLink} to="/registration" variant="body2">
-                  Sign up here
-                </Link>
-              </Typography>
-            </Box>
+            <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
+              Not registered yet?{' '}
+              <Link component={RouterLink} to="/registration" variant="body2">
+                Sign up here
+              </Link>
+            </Typography>
           </Box>
         </CardContent>
       </Card>
