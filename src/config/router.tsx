@@ -4,11 +4,24 @@ import HomePage from '../pages/HomePage';
 import LoginPage from '../pages/LoginPage';
 import RegistrationPage from '../pages/RegistrationPage';
 import RequestPasswordResetPage from '../pages/RequestPasswordResetPage';
-import VerificationComplete from '../pages/VerificationComplete';
+import VerificationCompletePage from '../pages/VerificationCompletePage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import ProfilePage from '../pages/ProfilePage';
+import ResetPasswordPage from '../pages/ResetPasswordPage';
+import PublicLayout from '../components/PublicLayout';
 
 const routes = createBrowserRouter([
+  {
+    path: "/",
+    element: <PublicLayout />,
+    children: [
+      { path: "/login", element: <LoginPage /> },
+      { path: "/registration", element: <RegistrationPage /> },
+      { path: "/forgot-password", element: <RequestPasswordResetPage /> },
+      { path: "/reset-password", element: <ResetPasswordPage /> },
+      { path: "/verification-complete", element: <VerificationCompletePage /> },
+    ],
+  },
   {
     path: "/",
     element: <Layout />,
@@ -16,31 +29,9 @@ const routes = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
-          {
-            path: "/",
-            element: <HomePage />,
-          },
+          { index: true, element: <HomePage /> },
+          { path: "/profile", element: <ProfilePage /> },
         ],
-      },
-      {
-        path: "/login",
-        element: <LoginPage />,
-      },
-      {
-        path: "/registration",
-        element: <RegistrationPage />,
-      },
-      {
-        path: "/forgot-password",
-        element: <RequestPasswordResetPage />,
-      },
-      {
-        path: "/verification-complete",
-        element: <VerificationComplete />,
-      },
-      {
-        path: "/profile",
-        element: <ProfilePage />,
       },
     ],
   },
