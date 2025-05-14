@@ -18,6 +18,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import UserService from '../services/UserService';
 import { AxiosError } from 'axios';
+import { RouteUrls } from '../config/router';
 
 const RegistrationPage = () => {
   const [email, setEmail] = useState('');
@@ -64,7 +65,7 @@ const RegistrationPage = () => {
       const response = await UserService.register({ email, password });
 
       if (response?.success && response?.result) {
-        navigate('/login');
+        navigate(RouteUrls.login);
       } else {
         setError(response?.errorMessage || 'Registration failed');
         setTimeout(() => setError(''), 5000);

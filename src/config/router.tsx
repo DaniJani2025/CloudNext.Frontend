@@ -10,16 +10,28 @@ import ProfilePage from '../pages/ProfilePage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
 import PublicLayout from '../components/PublicLayout';
 
+
+export const RouteUrls = {
+  home: "/",
+  login: "/login",
+  register: "/registration",
+  forgotPassword: "/forgot-password",
+  resetPassword: "/reset-password",
+  verificationComplete: "/verification-complete",
+  profile: "/profile",
+};
+
+
 const routes = createBrowserRouter([
   {
     path: "/",
     element: <PublicLayout />,
     children: [
-      { path: "/login", element: <LoginPage /> },
-      { path: "/registration", element: <RegistrationPage /> },
-      { path: "/forgot-password", element: <RequestPasswordResetPage /> },
-      { path: "/reset-password", element: <ResetPasswordPage /> },
-      { path: "/verification-complete", element: <VerificationCompletePage /> },
+      { path: RouteUrls.login, element: <LoginPage /> },
+      { path: RouteUrls.register, element: <RegistrationPage /> },
+      { path: RouteUrls.forgotPassword, element: <RequestPasswordResetPage /> },
+      { path: RouteUrls.resetPassword, element: <ResetPasswordPage /> },
+      { path: RouteUrls.verificationComplete, element: <VerificationCompletePage /> },
     ],
   },
   {
@@ -30,7 +42,7 @@ const routes = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           { index: true, element: <HomePage /> },
-          { path: "/profile", element: <ProfilePage /> },
+          { path: RouteUrls.profile, element: <ProfilePage /> },
         ],
       },
     ],

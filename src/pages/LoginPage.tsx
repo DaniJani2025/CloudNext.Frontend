@@ -19,6 +19,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import UserService from '../services/UserService';
 import StorageService from '../services/StorageService';
 import { AxiosError } from 'axios';
+import { RouteUrls } from '../config/router';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -48,7 +49,7 @@ const LoginPage = () => {
         StorageService.setEmail(email);
         StorageService.setTokenExpiry(expiresAt);
         StorageService.setLoginStatus(true);
-        navigate('/');
+        navigate(RouteUrls.home);
       } else {
         setError(response?.errorMessage || 'Login failed');
         setTimeout(() => setError(''), 5000);
