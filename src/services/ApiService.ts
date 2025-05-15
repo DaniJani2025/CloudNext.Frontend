@@ -169,6 +169,16 @@ export default class ApiService {
     }
   }
 
+  async patch(endpoint = '', data = {}, config: AxiosRequestConfig = {}) {
+    try {
+      const response = await this.api.patch(endpoint, data, config);
+      return response.data;
+    } catch (error) {
+      console.error(`PATCH ${endpoint} failed:`, error);
+      throw error;
+    }
+  }
+
   async postBlob(endpoint = '', data = {}, config: AxiosRequestConfig = {}) {
     try {
       const response = await this.api.post(endpoint, data, {

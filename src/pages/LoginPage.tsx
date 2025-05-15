@@ -116,6 +116,17 @@ const LoginPage = () => {
               />
             </FormControl>
 
+            <Box width="100%" display="flex" justifyContent="flex-end" mt={1}>
+              <Link
+                component={RouterLink}
+                to={RouteUrls.forgotPassword}
+                variant="body2"
+                underline="hover"
+              >
+                Forgot Password?
+              </Link>
+            </Box>
+
             <Button
               variant="contained"
               fullWidth
