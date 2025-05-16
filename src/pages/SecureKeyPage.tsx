@@ -2,6 +2,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
   Container, Card, CardContent, Typography, Box, Button, IconButton, InputAdornment, TextField,
+  Alert,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { RouteUrls } from '../config/router';
@@ -36,22 +40,32 @@ const SecureKeyPage  = () => {
               {message}
             </Typography>
 
-            <TextField
-              type="password"
-              value={recoveryKey}
-              fullWidth
-              disabled
-              InputProps={{
-                endAdornment: (
+            <Alert severity="warning" sx={{ mb: 2, width: '100%', textAlign: 'left' }}>
+              ⚠️ <strong>Make sure to copy this now!</strong> You won’t see it again.
+            </Alert>
+
+            <FormControl fullWidth variant="outlined" margin="normal" sx={{ mb: 2 }}>
+              <InputLabel htmlFor="recovery-key">Recovery Key</InputLabel>
+              <OutlinedInput
+                id="recovery-key"
+                type="text"
+                value={recoveryKey}
+                disabled
+                endAdornment={
                   <InputAdornment position="end">
                     <IconButton onClick={handleCopy} edge="end">
                       <ContentCopyIcon />
                     </IconButton>
                   </InputAdornment>
-                ),
-              }}
-              sx={{ mb: 2 }}
-            />
+                }
+                label="Recovery Key"
+                sx={{
+                  fontFamily: 'monospace',
+                  letterSpacing: '0.1em',
+                  '& input': { WebkitTextSecurity: 'disc' },
+                }}
+              />
+            </FormControl>
 
             {copied && (
               <Typography variant="body2" color="success.main" sx={{ mb: 2 }}>

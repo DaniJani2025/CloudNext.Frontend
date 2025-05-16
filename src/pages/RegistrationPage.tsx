@@ -70,7 +70,7 @@ const RegistrationPage = () => {
           state: {
             recoveryKey,
             email,
-            message: `Your account has been created! 🎉 Please keep this recovery key safe. It will NOT be shown again`,
+            message: "Account created successfully! Please **copy and save your recovery key securely**",
           }
         });
       } else {
