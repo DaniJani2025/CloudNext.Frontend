@@ -27,9 +27,14 @@ function RequestPasswordResetPage() {
   return (
     <div style={{ maxWidth: 400, margin: '0 auto', marginTop: '100px' }}>
       {submitted ? (
-        <Typography variant="h6" color="success.main">
-          A reset link has been sent to your email.
-        </Typography>
+        <>
+          <Typography variant="h6" color="success.main">
+            A Reset Password link has been sent to your email.
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            Please check your inbox (and spam folder) for the password reset link.
+          </Typography>
+        </>
       ) : (
         <form onSubmit={handleSubmit}>
           <Typography variant="h5" gutterBottom>

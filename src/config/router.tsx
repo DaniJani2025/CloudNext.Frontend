@@ -9,16 +9,18 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import ProfilePage from '../pages/ProfilePage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
 import PublicLayout from '../components/PublicLayout';
+import SecureKeyPage  from '../pages/SecureKeyPage';
 
 
 export const RouteUrls = {
   home: "/",
+  profile: "/profile",
   login: "/login",
   register: "/registration",
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",
   verificationComplete: "/verification-complete",
-  profile: "/profile",
+  secureKey: '/secure-key'
 };
 
 
@@ -32,6 +34,7 @@ const routes = createBrowserRouter([
       { path: RouteUrls.forgotPassword, element: <RequestPasswordResetPage /> },
       { path: RouteUrls.resetPassword, element: <ResetPasswordPage /> },
       { path: RouteUrls.verificationComplete, element: <VerificationCompletePage /> },
+      { path: RouteUrls.secureKey, element: <SecureKeyPage /> },
     ],
   },
   {

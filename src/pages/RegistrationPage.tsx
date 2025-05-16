@@ -65,7 +65,14 @@ const RegistrationPage = () => {
       const response = await UserService.register({ email, password });
 
       if (response?.success && response?.result) {
-        navigate(RouteUrls.login);
+        const { recoveryKey, email } = response.result;
+        navigate(RouteUrls.secureKey, {
+          state: {
+            recoveryKey,
+            email,
+            message: `Your account has been created! 🎉 Please keep this recovery key safe. It will NOT be shown again`,
+          }
+        });
       } else {
         setError(response?.errorMessage || 'Registration failed');
         setTimeout(() => setError(''), 5000);
