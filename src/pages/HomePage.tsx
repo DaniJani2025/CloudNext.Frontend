@@ -356,7 +356,6 @@ export default function HomePage() {
                         if (currentPath.length > 1) {
                           getHome();
                         }
-                        handleFolderClick(folder.folderId);
                       } else {
                         handleFolderClick(folder.folderId);
                       }
