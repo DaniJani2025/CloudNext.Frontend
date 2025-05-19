@@ -13,6 +13,7 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
+  Divider,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -143,6 +144,59 @@ const LoginPage = () => {
                 Sign up here
               </Link>
             </Typography>
+                
+            <Divider sx={{ width: '100%', my: 3 }}>OR</Divider>
+              
+            <Box display="flex" flexDirection="column" gap={1} width="100%">
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => console.log('OAuth login: Google clicked')}
+                startIcon={
+                  <img
+                    src="/icons/google-logo.png"
+                    alt="Google"
+                    style={{ width: 20, height: 20 }}
+                  />
+                }
+                sx={{ textTransform: 'none' }}
+              >
+                Continue with Google
+              </Button>
+
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => console.log('OAuth login: Facebook clicked')}
+                startIcon={
+                  <img
+                    src="/icons/facebook-logo.png"
+                    alt="Facebook"
+                    style={{ width: 20, height: 20 }}
+                  />
+                }
+                sx={{ textTransform: 'none' }}
+              >
+                Continue with Facebook
+              </Button>
+
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => console.log('OAuth login: Apple clicked')}
+                startIcon={
+                  <img
+                    src="/icons/apple-logo.png"
+                    alt="Apple"
+                    style={{ width: 20, height: 20 }}
+                  />
+                }
+                sx={{ textTransform: 'none' }}
+              >
+                Continue with Apple
+              </Button>
+            </Box>
+
           </Box>
         </CardContent>
       </Card>
