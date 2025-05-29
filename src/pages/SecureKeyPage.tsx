@@ -8,6 +8,7 @@ import {
   OutlinedInput,
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CheckIcon from '@mui/icons-material/Check';
 import { RouteUrls } from '../config/router';
 
 const SecureKeyPage  = () => {
@@ -54,7 +55,7 @@ const SecureKeyPage  = () => {
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton onClick={handleCopy} edge="end">
-                      <ContentCopyIcon />
+                      {copied ? <CheckIcon color="success" /> : <ContentCopyIcon />}
                     </IconButton>
                   </InputAdornment>
                 }
