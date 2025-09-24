@@ -8,8 +8,8 @@ export default defineConfig({
   server: {
     host: true,
     https: {
-      key: fs.readFileSync('path_to_your_local_certificates/<your-ip>-key.pem'),
-      cert: fs.readFileSync('path_to_your_local_certificates/<your-ip>-cert.pem'),
+      key: fs.readFileSync('path_to_your_local_certificates/<your-ip>.key'),
+      cert: fs.readFileSync('path_to_your_local_certificates/<your-ip>.cert'),
     },
   },
 })
