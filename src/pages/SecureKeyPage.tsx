@@ -15,6 +15,7 @@ const SecureKeyPage  = () => {
   const navigate = useNavigate();
   const { recoveryKey, email, message } = location.state || {};
   const [copied, setCopied] = useState(false);
+  const [hasCopied, setHasCopied] = useState(false);
 
   useEffect(() => {
     if (!recoveryKey) {
@@ -22,10 +23,26 @@ const SecureKeyPage  = () => {
     }
   }, [recoveryKey, email, navigate]);
 
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (!hasCopied) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [hasCopied]);
+
   const handleCopy = () => {
     navigator.clipboard.writeText(recoveryKey);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    setHasCopied(true);
   };
 
   return (
@@ -85,6 +102,7 @@ const SecureKeyPage  = () => {
               sx={{ mt: 4 }}
               fullWidth
               onClick={() => navigate(RouteUrls.login)}
+              disabled={!hasCopied}
             >
               Continue to Login
             </Button>
