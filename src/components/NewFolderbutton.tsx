@@ -25,7 +25,7 @@ const NewFolderButton: React.FC<NewFolderButtonProps> = ({ parentFolderId, onUpl
   
     const handleCreateFolder = async () => {
       try {
-        const userId = StorageService.getCurrentUser();
+        const userId = StorageService.getCurrentUser() ?? "";
         const response = await FolderService.createFolder(userId, folderName, parentFolderId);
         
         if (response && response.message === "Folder created successfully.") {

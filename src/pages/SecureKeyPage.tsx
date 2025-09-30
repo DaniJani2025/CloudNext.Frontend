@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
-  Container, Card, CardContent, Typography, Box, Button, IconButton, InputAdornment, TextField,
+  Container, Card, CardContent, Typography, Box, Button, IconButton, InputAdornment,
   Alert,
   FormControl,
   InputLabel,
@@ -25,7 +25,7 @@ const SecureKeyPage  = () => {
   }, [recoveryKey, email, navigate]);
 
   useEffect(() => {
-    const handleBeforeUnload = (e) => {
+    const handleBeforeUnload = (e: { preventDefault: () => void; returnValue: string; }) => {
       if (!hasCopied) {
         e.preventDefault();
         e.returnValue = '';

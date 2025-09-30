@@ -7,7 +7,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 let isRefreshing = false;
 let refreshSubscribers: RefreshSubscriber[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   refreshSubscribers.forEach((callback) => {
     if (error) {
       callback.reject(error);
@@ -26,7 +26,7 @@ export default class ApiService {
     this.controller = controllerName;
 
     this.api = axios.create({
-      baseURL: `${API_BASE_URL}/${controllerName}`,
+      baseURL: `${API_BASE_URL}/${this.controller}`,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -73,7 +73,7 @@ export default class ApiService {
                 originalRequest.headers.Authorization = `Bearer ${token}`;
                 resolve(axios(originalRequest));
               },
-              reject: (err: any) => {
+              reject: (err: unknown) => {
                 reject(err);
               }
             });

@@ -17,10 +17,10 @@ class FileService extends ApiService {
     }
   }
 
-  download(userId: Guid, fileIds: Guid) {
+  download(userId: Guid, fileIds: Guid | Guid[]) {
     const payload = {
       userId,
-      fileIds,
+      fileIds: Array.isArray(fileIds) ? fileIds : [fileIds]
     };
     return this.postBlob('download', payload);
   }
@@ -45,7 +45,7 @@ class FileService extends ApiService {
     }
   
     try {
-      const response = await this.api.get(url, config);
+      const response = await super.get(url, config);
       return response.data;
     } catch (error) {
       console.error(`STREAM ${url} failed:`, error);

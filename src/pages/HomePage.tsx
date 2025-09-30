@@ -30,7 +30,7 @@ export default function HomePage() {
   const [fileName, setFileName] = useState<string>('');
   const [currentPath, setCurrentPath] = useState<UserFolder[]>([]);
 
-  const userId = StorageService.getCurrentUser();
+  const userId = StorageService.getCurrentUser() ?? "";
 
   const isVideo = (file: UserFile) =>
     /\.(mp4|mkv|webm)$/i.test(file.originalName);
@@ -70,7 +70,8 @@ export default function HomePage() {
     loadFolderContents(null);
   }, []);
 
-  const handleFolderClick = (folderId: string) => {
+  const handleFolderClick = (folderId: string | null) => {
+    if (!folderId) return;
     const currentFolderId = folderHistory[folderHistory.length - 1] ?? null;
     if (folderId === currentFolderId) return;
 
@@ -171,7 +172,7 @@ export default function HomePage() {
       if (!file) return;
   
       try {
-        const resp = await FileService.download(userId, [fileId]);
+        const resp = await FileService.download(userId, fileId);
         const mime2 = getMimeType(file.originalName);
         
         const blob = mime2
@@ -260,7 +261,8 @@ export default function HomePage() {
     }
   };
 
-  const toggleFolderSelection = (folderId: string) => {
+  const toggleFolderSelection = (folderId: string | null) => {
+    if (!folderId) return;
     if (selectedFolders.includes(folderId)) {
       setSelectedFolders([]);
     } else {
@@ -378,9 +380,9 @@ export default function HomePage() {
                 display="flex" flexDirection="column" alignItems="center"
                 sx={{
                   width: 120, cursor: 'pointer',
-                  border: selectedFolders.includes(f.folderId) ? '2px solid #1976d2' : '1px solid transparent',
+                  border: selectedFolders.includes(f.folderId!) ? '2px solid #1976d2' : '1px solid transparent',
                   borderRadius: 2, p: 1,
-                  bgcolor: selectedFolders.includes(f.folderId) ? '#e3f2fd' : 'transparent',
+                  bgcolor: selectedFolders.includes(f.folderId!) ? '#e3f2fd' : 'transparent',
                   transition: '0.3s',
                   '&:hover': { bgcolor: '#e3f2fd', border: '2px solid #1976d2' },
                 }}

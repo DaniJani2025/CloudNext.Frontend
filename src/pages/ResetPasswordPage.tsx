@@ -3,7 +3,6 @@ import {
   Container,
   Box,
   Typography,
-  TextField,
   Button,
   InputAdornment,
   IconButton,
@@ -56,6 +55,7 @@ const ResetPasswordPage: React.FC = () => {
 
       if (resp.success) {
         const { newRecoveryKey } = resp.result;
+        setSuccess(true);
         navigate(RouteUrls.secureKey, {
           state: {
             recoveryKey: newRecoveryKey,

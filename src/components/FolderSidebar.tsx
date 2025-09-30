@@ -55,6 +55,7 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
   };
 
   const renderFolderNode = (folder: UserFolder, depth = 0) => {
+    if(!folder.folderId) return;
     const isExpanded = expandedFolders.includes(folder.folderId);
   
     return (
@@ -63,8 +64,11 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
           sx={{ pl: 2 + depth * 2 }}
           onClick={() => {
             setHasFetchedHome(false);
-            handleFolderClick(folder.folderId);
-            handleToggleCollapse(folder.folderId);
+            if (folder.folderId) {
+              handleFolderClick(folder.folderId);
+              handleToggleCollapse(folder.folderId);
+            }
+
           }}
         >
           <Folder sx={{ mr: 1 }} />
@@ -90,7 +94,9 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();
-                handleToggleCollapse(folder.folderId);
+                if (folder.folderId) {
+                  handleToggleCollapse(folder.folderId);
+                }
               }}
             >
               {isExpanded ? <ArrowDownward /> : <ArrowForward />}
