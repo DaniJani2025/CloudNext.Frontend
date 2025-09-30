@@ -1,11 +1,12 @@
 import { Button, Container, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { RouteUrls } from "../config/router";
 
-const VerificationComplete = () => {
+const VerificationCompletePage = () => {
   const navigate = useNavigate();
 
   const handleLoginRedirect = () => {
-    navigate("/login");
+    navigate(RouteUrls.login);
   };
 
   return (
@@ -25,4 +26,4 @@ const VerificationComplete = () => {
   );
 };
 
-export default VerificationComplete;
+export default VerificationCompletePage;

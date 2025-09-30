@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Folder, ArrowBack, Download as DownloadIcon, CloseFullscreen as CloseFullscreenIcon, Sort as SortIcon } from '@mui/icons-material';
-import { Box, Typography, Card, CardMedia, IconButton, Dialog, DialogActions, DialogContent, Button } from '@mui/material';
+import { Box, Typography, Card, CardMedia, IconButton, Dialog, DialogActions, DialogContent, Button, Tooltip } from '@mui/material';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import JSZip from 'jszip';
 
@@ -30,7 +30,7 @@ export default function HomePage() {
   const [fileName, setFileName] = useState<string>('');
   const [currentPath, setCurrentPath] = useState<UserFolder[]>([]);
 
-  const userId = StorageService.getCurrentUser();
+  const userId = StorageService.getCurrentUser() ?? "";
 
   const isVideo = (file: UserFile) =>
     /\.(mp4|mkv|webm)$/i.test(file.originalName);
@@ -70,7 +70,8 @@ export default function HomePage() {
     loadFolderContents(null);
   }, []);
 
-  const handleFolderClick = (folderId: string) => {
+  const handleFolderClick = (folderId: string | null) => {
+    if (!folderId) return;
     const currentFolderId = folderHistory[folderHistory.length - 1] ?? null;
     if (folderId === currentFolderId) return;
 
@@ -171,7 +172,7 @@ export default function HomePage() {
       if (!file) return;
   
       try {
-        const resp = await FileService.download(userId, [fileId]);
+        const resp = await FileService.download(userId, fileId);
         const mime2 = getMimeType(file.originalName);
         
         const blob = mime2
@@ -260,7 +261,8 @@ export default function HomePage() {
     }
   };
 
-  const toggleFolderSelection = (folderId: string) => {
+  const toggleFolderSelection = (folderId: string | null) => {
+    if (!folderId) return;
     if (selectedFolders.includes(folderId)) {
       setSelectedFolders([]);
     } else {
@@ -356,7 +358,6 @@ export default function HomePage() {
                         if (currentPath.length > 1) {
                           getHome();
                         }
-                        handleFolderClick(folder.folderId);
                       } else {
                         handleFolderClick(folder.folderId);
                       }
@@ -379,15 +380,28 @@ export default function HomePage() {
                 display="flex" flexDirection="column" alignItems="center"
                 sx={{
                   width: 120, cursor: 'pointer',
-                  border: selectedFolders.includes(f.folderId) ? '2px solid #1976d2' : '1px solid transparent',
+                  border: selectedFolders.includes(f.folderId!) ? '2px solid #1976d2' : '1px solid transparent',
                   borderRadius: 2, p: 1,
-                  bgcolor: selectedFolders.includes(f.folderId) ? '#e3f2fd' : 'transparent',
+                  bgcolor: selectedFolders.includes(f.folderId!) ? '#e3f2fd' : 'transparent',
                   transition: '0.3s',
                   '&:hover': { bgcolor: '#e3f2fd', border: '2px solid #1976d2' },
                 }}
               >
                 <Folder sx={{ fontSize: 60, color: '#1976d2' }} />
-                <Typography noWrap>{f.name}</Typography>
+                <Tooltip title={f.name}>
+                  <Typography
+                    noWrap
+                    sx={{
+                      maxWidth: '100%',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      textAlign: 'center',
+                    }}
+                  >
+                    {f.name}
+                  </Typography>
+                </Tooltip>
               </Box>
             ))}
           </Box>

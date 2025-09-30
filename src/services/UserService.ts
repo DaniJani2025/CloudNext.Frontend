@@ -23,6 +23,14 @@ class UserService extends ApiService {
         });
       }
     }
+
+  requestPasswordReset( data: { email: string } ) {
+    return this.post('request-password-reset', data);
+  }
+
+  resetPassword( data: { token: string; newPassword: string; recoveryKey: string  } ) {
+    return this.patch('reset-password', data);
+  }
 }
 
 export default new UserService();

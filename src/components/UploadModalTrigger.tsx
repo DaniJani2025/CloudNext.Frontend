@@ -20,7 +20,7 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
   const [rejectedFiles, setRejectedFiles] = useState<string[]>([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const userId = StorageService.getCurrentUser();
+  const userId = StorageService.getCurrentUser() ?? "";
 
   const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -106,7 +106,7 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
       }
     } else if (uploadedFiles.length > 0) {
       try {
-          await FileService.upload(uploadedFiles, userId, parentFolderId);
+          await FileService.upload(uploadedFiles, userId, parentFolderId!);
           resetModal();
           onUploadSuccess();
       } catch (error) {
@@ -190,7 +190,7 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
                   type="file"
                   hidden
                   multiple={uploadMode === 'files'}
-                  webkitdirectory={uploadMode === 'folder' ? 'true' : undefined}
+                  {...(uploadMode === 'folder' ? { webkitdirectory: '' } : {})}
                   onChange={handleFileInputChange}
                 />
               </Button>
