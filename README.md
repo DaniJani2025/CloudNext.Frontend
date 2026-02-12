@@ -61,5 +61,29 @@ All API communication is abstracted through a service layer to maintain separati
 
 ---
 
-## Project Structure
+## System Architecture
 
+For full system architecture and database schema, see:
+https://github.com/DaniJani2025/CloudNext.Backend
+
+---
+
+## Running Locally
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Start the development server:
+
+```bash
+npm run dev
+```
+
+3. For local configuration (uses vite.config.local.ts):
+
+```bash
+npm run dev:local
+```
