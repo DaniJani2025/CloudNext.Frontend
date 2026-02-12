@@ -13,12 +13,14 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
+  Divider,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import UserService from '../services/UserService';
 import StorageService from '../services/StorageService';
 import { AxiosError } from 'axios';
+import { RouteUrls } from '../config/router';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -48,7 +50,7 @@ const LoginPage = () => {
         StorageService.setEmail(email);
         StorageService.setTokenExpiry(expiresAt);
         StorageService.setLoginStatus(true);
-        navigate('/');
+        navigate(RouteUrls.home);
       } else {
         setError(response?.errorMessage || 'Login failed');
         setTimeout(() => setError(''), 5000);
@@ -66,18 +68,23 @@ const LoginPage = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 12 }}>
-      <Card elevation={4}>
+    <Container maxWidth="sm" sx={{ mt: 10 }}>
+      <Card elevation={6} sx={{ p: 3 }}>
         <CardContent>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <Typography variant="h4" gutterBottom>
+          <Box display="flex" flexDirection="column" alignItems="center" textAlign="center">
+            <Typography variant="h5" color="primary" gutterBottom>
+              Sign in to CloudNext
+            </Typography>
+            <Typography variant="h4" gutterBottom sx={{ mt: 1 }}>
               Login
             </Typography>
+
             {error && (
               <Typography color="error" sx={{ mb: 2 }}>
                 {error}
               </Typography>
             )}
+
             <TextField
               label="Email"
               variant="outlined"
@@ -86,6 +93,7 @@ const LoginPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+
             <FormControl fullWidth variant="outlined" margin="normal">
               <InputLabel htmlFor="password">Password</InputLabel>
               <OutlinedInput
@@ -95,10 +103,7 @@ const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
+                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -111,6 +116,18 @@ const LoginPage = () => {
                 }}
               />
             </FormControl>
+
+            <Box width="100%" display="flex" justifyContent="flex-end" mt={1}>
+              <Link
+                component={RouterLink}
+                to={RouteUrls.forgotPassword}
+                variant="body2"
+                underline="hover"
+              >
+                Forgot Password?
+              </Link>
+            </Box>
+
             <Button
               variant="contained"
               fullWidth
@@ -121,14 +138,65 @@ const LoginPage = () => {
               Login
             </Button>
 
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="body2" color="textSecondary">
-                Not registered yet?{' '}
-                <Link component={RouterLink} to="/registration" variant="body2">
-                  Sign up here
-                </Link>
-              </Typography>
+            <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
+              Not registered yet?{' '}
+              <Link component={RouterLink} to="/registration" variant="body2">
+                Sign up here
+              </Link>
+            </Typography>
+                
+            <Divider sx={{ width: '100%', my: 3 }}>OR</Divider>
+              
+            <Box display="flex" flexDirection="column" gap={1} width="100%">
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => console.log('OAuth login: Google clicked')}
+                startIcon={
+                  <img
+                    src="/icons/google-logo.png"
+                    alt="Google"
+                    style={{ width: 20, height: 20 }}
+                  />
+                }
+                sx={{ textTransform: 'none' }}
+              >
+                Continue with Google
+              </Button>
+
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => console.log('OAuth login: Facebook clicked')}
+                startIcon={
+                  <img
+                    src="/icons/facebook-logo.png"
+                    alt="Facebook"
+                    style={{ width: 20, height: 20 }}
+                  />
+                }
+                sx={{ textTransform: 'none' }}
+              >
+                Continue with Facebook
+              </Button>
+
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => console.log('OAuth login: Apple clicked')}
+                startIcon={
+                  <img
+                    src="/icons/apple-logo.png"
+                    alt="Apple"
+                    style={{ width: 20, height: 20 }}
+                  />
+                }
+                sx={{ textTransform: 'none' }}
+              >
+                Continue with Apple
+              </Button>
             </Box>
+
           </Box>
         </CardContent>
       </Card>

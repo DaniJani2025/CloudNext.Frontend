@@ -7,8 +7,10 @@
     "dev": "vite",
     "dev:local": "vite --config vite.config.local.ts",
     "build": "tsc -b && vite build",
+    "build:local": "tsc -b && vite build --config vite.config.local.ts",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:local": "npm run build:local && vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

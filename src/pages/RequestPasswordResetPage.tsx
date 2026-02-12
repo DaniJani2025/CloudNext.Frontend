@@ -1,30 +1,52 @@
 import { useState } from 'react';
-import { TextField, Button, Typography } from '@mui/material';
+import { TextField, Button, Typography, Alert } from '@mui/material';
+import UserService from '../services/UserService';
 
 function RequestPasswordResetPage() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // TODO: Replace with real API call
-    await fakeApiRequest(email);
+    setError(null);
 
-    setSubmitted(true);
+    try {
+      const response = await UserService.requestPasswordReset({ email });
+
+      if (response.success) {
+        setSubmitted(true);
+      } else {
+        setError(response.errorMessage || 'Failed to send reset link.');
+      }
+    } catch (err) {
+      setError('Something went wrong. Please try again.');
+    }
   };
 
   return (
     <div style={{ maxWidth: 400, margin: '0 auto', marginTop: '100px' }}>
       {submitted ? (
-        <Typography variant="h6" color="success.main">
-          A reset link has been sent to your email.
-        </Typography>
+        <>
+          <Typography variant="h6" color="success.main">
+            A Reset Password link has been sent to your email.
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            Please check your inbox (and spam folder) for the password reset link.
+          </Typography>
+        </>
       ) : (
         <form onSubmit={handleSubmit}>
           <Typography variant="h5" gutterBottom>
             Reset Your Password
           </Typography>
+
+          {error && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {error}
+            </Alert>
+          )}
+
           <TextField
             fullWidth
             label="Email Address"
@@ -34,6 +56,7 @@ function RequestPasswordResetPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+
           <Button
             type="submit"
             variant="contained"
@@ -47,11 +70,6 @@ function RequestPasswordResetPage() {
       )}
     </div>
   );
-}
-
-async function fakeApiRequest(email: string) {
-  console.log('Sending reset request for:', email);
-  return new Promise((resolve) => setTimeout(resolve, 1000));
 }
 
 export default RequestPasswordResetPage;

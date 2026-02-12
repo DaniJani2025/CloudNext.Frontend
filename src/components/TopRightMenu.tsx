@@ -4,6 +4,7 @@ import { Home as HomeIcon, Logout as LogoutIcon, Person as PersonIcon } from '@m
 import { useNavigate } from 'react-router-dom';
 import StorageService from '../services/StorageService';
 import UserService from '../services/UserService';
+import { RouteUrls } from '../config/router';
 
 const TopRightMenu = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -30,15 +31,15 @@ const TopRightMenu = () => {
             console.error('Error during logout API call', err);
         }
         StorageService.removeUserDetails();
-        navigate('/login');
+        navigate(RouteUrls.login);
     };
 
     const handleProfileNavigate = () => {
-        navigate('/profile');
+        navigate(RouteUrls.profile);
     };
 
     const handleHomeNavigate = () => {
-        navigate('/');
+        navigate(RouteUrls.home);
     };
 
     return (

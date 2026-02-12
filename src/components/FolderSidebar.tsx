@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import FolderService from '../services/FolderService';
-import { Box, Collapse, List, ListItem, ListItemText, IconButton, ListItemButton } from '@mui/material';
+import { Box, Collapse, List, ListItem, ListItemText, IconButton, ListItemButton, Tooltip } from '@mui/material';
 import { Folder, ArrowForward, ArrowDownward, Home } from '@mui/icons-material';
 import { UserFolder } from '../types/types';
 import StorageService from '../services/StorageService';
@@ -55,6 +55,7 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
   };
 
   const renderFolderNode = (folder: UserFolder, depth = 0) => {
+    if(!folder.folderId) return;
     const isExpanded = expandedFolders.includes(folder.folderId);
   
     return (
@@ -63,27 +64,48 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
           sx={{ pl: 2 + depth * 2 }}
           onClick={() => {
             setHasFetchedHome(false);
-            handleFolderClick(folder.folderId);
-            handleToggleCollapse(folder.folderId);
+            if (folder.folderId) {
+              handleFolderClick(folder.folderId);
+              handleToggleCollapse(folder.folderId);
+            }
+
           }}
         >
           <Folder sx={{ mr: 1 }} />
-          <ListItemText primary={folder.name} />
-  
+
+          <Tooltip title={folder.name} placement="right">
+            <ListItemText
+              primary={folder.name}
+              slotProps={{
+                primary: {
+                  noWrap: true,
+                  sx: {
+                    maxWidth: 150,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  },
+                },
+              }}
+            />
+          </Tooltip>
+
           {folder.subFolders?.length > 0 && (
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();
-                handleToggleCollapse(folder.folderId);
+                if (folder.folderId) {
+                  handleToggleCollapse(folder.folderId);
+                }
               }}
             >
               {isExpanded ? <ArrowDownward /> : <ArrowForward />}
             </IconButton>
           )}
         </ListItemButton>
-  
+
         {folder.subFolders?.length > 0 && (
-          <Collapse in={isExpanded}>
+          <Collapse in={isExpanded} timeout="auto" unmountOnExit>
             {folder.subFolders.map((child) =>
               renderFolderNode(child, depth + 1)
             )}
@@ -91,10 +113,10 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
         )}
       </div>
     );
-  };
+};
 
   return (
-    <Box sx={{ width: 250, borderRight: '1px solid #ccc', padding: 2 }}>
+    <Box sx={{ width: 250, borderRight: '1px solid #ccc', p: 2 }}>
       <ListItemButton
         onClick={() => {
           if (!hasFetchedHome) {
@@ -103,10 +125,27 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
           }
           setHomeExpanded((prev) => !prev);
         }}
-        sx={{ padding: 1 }}
+        sx={{ p: 1 }}
       >
-        <Home sx={{ marginRight: 1 }} />
-        <ListItemText primary="Home" />
+        <Home sx={{ mr: 1 }} />
+
+        <Tooltip title="Home" placement="right">
+          <ListItemText
+            primary="Home"
+            slotProps={{
+              primary: {
+                noWrap: true,
+                sx: {
+                  maxWidth: 120,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                },
+              },
+            }}
+          />
+        </Tooltip>
+
         <IconButton
           onClick={(e) => {
             e.stopPropagation();
@@ -117,8 +156,8 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
         </IconButton>
       </ListItemButton>
 
-      <Collapse in={homeExpanded}>
-        <List>
+      <Collapse in={homeExpanded} timeout="auto" unmountOnExit>
+        <List disablePadding>
           {folderStructure.length > 0 ? (
             folderStructure.map((rootFolder) => renderFolderNode(rootFolder))
           ) : (
@@ -130,6 +169,6 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
       </Collapse>
     </Box>
   );
-};
+}
 
 export default FolderSidebar;
