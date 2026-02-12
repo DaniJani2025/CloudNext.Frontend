@@ -1,54 +1,65 @@
-# React + TypeScript + Vite
+## Related Repository
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Backend API:
+https://github.com/DaniJani2025/CloudNext.Backend
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# CloudNext Frontend
 
-## Expanding the ESLint configuration
+CloudNext is a security-first file and folder management platform inspired by services like Google Drive.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+This repository contains the **React frontend application** for CloudNext.  
+The backend API is maintained separately in the `CloudNext.Backend` repository.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Overview
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+CloudNext enables users to securely store, organize, and manage files and folders.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+At account creation, a unique cryptographic key is generated for the user.  
+If this key is lost, stored data becomes non-recoverable by design.
+
+The system follows a strict zero-recovery security principle — the platform does not retain the ability to decrypt user data without the user’s key.
+
+---
+
+## Core Features
+
+- Secure authentication flow
+- File and folder creation
+- Hierarchical file navigation
+- Structured deletion operations
+- Key-based access model
+- API-driven architecture
+- Responsive UI
+
+---
+
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- Axios
+- Tailwind CSS (if applicable)
+
+---
+
+## Architecture
+
+The frontend follows a modular structure:
+
+- **Pages** – Route-based UI structure  
+- **Components** – Reusable UI components  
+- **Services** – Centralized API communication layer  
+- **Hooks** – Shared logic abstractions  
+- **Utilities** – Helper functions  
+
+All API communication is abstracted through a service layer to maintain separation of concerns and predictable data flow.
+
+---
+
+## Project Structure
+
