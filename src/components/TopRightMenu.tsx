@@ -43,17 +43,26 @@ const TopRightMenu = () => {
     };
 
     return (
-        <Box sx={{ position: 'absolute', top: 10, right: 10 }}>
+        <Box sx={{ position: 'fixed', top: 14, right: 16, zIndex: 1200 }}>
             <Tooltip title="Profile & settings">
-                <IconButton onClick={handleMenuOpen} sx={{ p: 0 }}>
+                <IconButton
+                    onClick={handleMenuOpen}
+                    sx={{
+                        p: 0.25,
+                        bgcolor: 'rgba(255,255,255,0.84)',
+                        backdropFilter: 'blur(8px)',
+                        boxShadow: '0 10px 24px rgba(15, 23, 42, 0.16)',
+                        '&:hover': { bgcolor: 'rgba(255,255,255,0.95)' },
+                    }}
+                >
                     <Avatar
                     sx={{
-                        bgcolor: '#1976d2',
+                        bgcolor: '#0f6ab8',
                         color: 'white',
                         width: 42,
                         height: 42,
-                        fontSize: 20,
-                        fontWeight: 500,
+                        fontSize: 18,
+                        fontWeight: 600,
                     }}
                     >
                     {userDisplayName[0]?.toUpperCase() || 'U'}
@@ -70,7 +79,9 @@ const TopRightMenu = () => {
                       elevation: 4,
                       sx: {
                         mt: 1.5,
-                        minWidth: 180,
+                        minWidth: 200,
+                        borderRadius: 2,
+                        border: '1px solid rgba(15, 106, 184, 0.12)',
                       },
                     },
                 }}

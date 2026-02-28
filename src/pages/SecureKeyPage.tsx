@@ -47,8 +47,17 @@ const SecureKeyPage  = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 10 }}>
-      <Card elevation={6} sx={{ p: 3 }}>
+    <Container maxWidth="sm" sx={{ py: { xs: 4, sm: 8 } }}>
+      <Card
+        elevation={0}
+        sx={{
+          p: { xs: 1, sm: 2 },
+          borderRadius: 4,
+          border: '1px solid rgba(15, 106, 184, 0.16)',
+          bgcolor: 'rgba(255,255,255,0.88)',
+          backdropFilter: 'blur(8px)',
+        }}
+      >
         <CardContent>
           <Box display="flex" flexDirection="column" alignItems="center" textAlign="center">
             <Typography variant="h5" color="primary" gutterBottom>
@@ -59,7 +68,7 @@ const SecureKeyPage  = () => {
             </Typography>
 
             <Alert severity="warning" sx={{ mb: 2, width: '100%', textAlign: 'left' }}>
-              ⚠️ <strong>Make sure to copy this now!</strong> You won’t see it again.
+              <strong>Make sure to copy this now!</strong> You will not see it again.
             </Alert>
 
             <FormControl fullWidth variant="outlined" margin="normal" sx={{ mb: 2 }}>
@@ -100,7 +109,7 @@ const SecureKeyPage  = () => {
             <Button
               variant="contained"
               color="primary"
-              sx={{ mt: 4 }}
+              sx={{ mt: 4, py: 1.1 }}
               fullWidth
               onClick={() => navigate(RouteUrls.login)}
               disabled={!hasCopied}
@@ -115,3 +124,4 @@ const SecureKeyPage  = () => {
 };
 
 export default SecureKeyPage;
+

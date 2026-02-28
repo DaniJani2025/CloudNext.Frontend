@@ -279,14 +279,26 @@ export default function HomePage() {
 
   return (
     <div>
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        mb={2.5}
+        sx={{
+          p: 2,
+          borderRadius: 3,
+          bgcolor: 'rgba(255,255,255,0.74)',
+          border: '1px solid rgba(15, 106, 184, 0.12)',
+          backdropFilter: 'blur(6px)',
+        }}
+      >
         <Box display="flex" alignItems="center">
           <IconButton onClick={handleBackClick} disabled={!folderHistory.length}>
             <ArrowBack />
           </IconButton>
           <Typography variant="h5" ml={1}>Drive</Typography>
         </Box>
-        <Box display="flex" alignItems="center" gap={2} sx={{ mr: 8 }}>
+        <Box display="flex" alignItems="center" gap={1.5} sx={{ mr: 8 }}>
           <UploadModalTrigger parentFolderId={folderHistory[folderHistory.length - 1]} onUploadSuccess={refreshData} />
           <NewFolderButton parentFolderId={folderHistory[folderHistory.length - 1]} onUploadSuccess={refreshData} />
           <Button variant="outlined" startIcon={<SortIcon />}>Sort</Button>
@@ -298,12 +310,12 @@ export default function HomePage() {
         alignItems="center"
         justifyContent="space-between"
         sx={{
-          bgcolor: '#e3f2fd',
-          border: '1px solid #90caf9',
-          borderRadius: 2,
+          bgcolor: 'rgba(238, 247, 255, 0.92)',
+          border: '1px solid rgba(15, 106, 184, 0.2)',
+          borderRadius: 3,
           px: 2,
           py: 1,
-          mb: 2,
+          mb: 2.5,
         }}
       >
         <Typography>
@@ -344,9 +356,24 @@ export default function HomePage() {
         </Box>
       </Box>
 
-      <Box display="flex">
+      <Box display="flex" gap={2}>
         <FolderSidebar userId={userId!} onFolderClick={handleFolderClick} refreshTrigger={refreshSidebar} getHome={getHome} />
-        <Box flex={1} display="flex" flexDirection="column" gap={4} flexWrap="wrap" pl={2} mb={4}>
+        <Box
+          flex={1}
+          display="flex"
+          flexDirection="column"
+          gap={4}
+          flexWrap="wrap"
+          pl={1}
+          pr={1}
+          mb={4}
+          sx={{
+            p: 2,
+            borderRadius: 3,
+            bgcolor: 'rgba(255,255,255,0.58)',
+            border: '1px solid rgba(15, 106, 184, 0.1)',
+          }}
+        >
 
           <Box display="flex" alignItems="center" gap={1} mb={2} pl={1}>
             {currentPath.map((folder, idx) => (
@@ -380,14 +407,14 @@ export default function HomePage() {
                 display="flex" flexDirection="column" alignItems="center"
                 sx={{
                   width: 120, cursor: 'pointer',
-                  border: selectedFolders.includes(f.folderId!) ? '2px solid #1976d2' : '1px solid transparent',
-                  borderRadius: 2, p: 1,
-                  bgcolor: selectedFolders.includes(f.folderId!) ? '#e3f2fd' : 'transparent',
-                  transition: '0.3s',
-                  '&:hover': { bgcolor: '#e3f2fd', border: '2px solid #1976d2' },
+                  border: selectedFolders.includes(f.folderId!) ? '2px solid #0f6ab8' : '1px solid rgba(15, 106, 184, 0.16)',
+                  borderRadius: 3, p: 1,
+                  bgcolor: selectedFolders.includes(f.folderId!) ? 'rgba(227, 242, 253, 0.92)' : 'rgba(255,255,255,0.65)',
+                  transition: '0.2s',
+                  '&:hover': { bgcolor: 'rgba(227, 242, 253, 0.92)', border: '2px solid #0f6ab8' },
                 }}
               >
-                <Folder sx={{ fontSize: 60, color: '#1976d2' }} />
+                <Folder sx={{ fontSize: 60, color: '#0f6ab8' }} />
                 <Tooltip title={f.name}>
                   <Typography
                     noWrap
@@ -414,11 +441,11 @@ export default function HomePage() {
                 onDoubleClick={(e) => { e.stopPropagation(); handleFileClick(file); }}
                 sx={{
                   width: 120, p: 1, cursor: 'pointer',
-                  border: selectedFiles.includes(file.fileId) ? '2px solid #1976d2' : '1px solid transparent',
-                  borderRadius: 2,
-                  bgcolor: selectedFiles.includes(file.fileId) ? '#e3f2fd' : 'transparent',
-                  transition: '0.3s',
-                  '&:hover': { bgcolor: '#e3f2fd', border: '2px solid #1976d2' },
+                  border: selectedFiles.includes(file.fileId) ? '2px solid #0f6ab8' : '1px solid rgba(15, 106, 184, 0.16)',
+                  borderRadius: 3,
+                  bgcolor: selectedFiles.includes(file.fileId) ? 'rgba(227, 242, 253, 0.92)' : 'rgba(255,255,255,0.7)',
+                  transition: '0.2s',
+                  '&:hover': { bgcolor: 'rgba(227, 242, 253, 0.92)', border: '2px solid #0f6ab8' },
                 }}
               >
                 <Box position="relative">

@@ -122,6 +122,7 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
         variant="outlined"
         startIcon={<UploadIcon />}
         onClick={() => setOpen(true)}
+        sx={{ minWidth: 120 }}
       >
         Upload
       </Button>
@@ -166,11 +167,11 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
               onDrop={handleDrop}
               onDragOver={(e) => e.preventDefault()}
               sx={{
-                border: '2px dashed #1976d2',
+                border: '2px dashed rgba(15, 106, 184, 0.7)',
                 borderRadius: 2,
                 p: 4,
                 textAlign: 'center',
-                backgroundColor: '#f9f9f9',
+                backgroundColor: 'rgba(243, 247, 251, 0.9)',
                 cursor: 'pointer',
               }}
             >
@@ -201,7 +202,7 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
             <Box mt={2}>
               <Typography variant="subtitle1">Selected Folder:</Typography>
               <Typography variant="body2">
-                • {uploadedFiles[0]?.webkitRelativePath.split('/')[0]}
+                - {uploadedFiles[0]?.webkitRelativePath.split('/')[0]}
               </Typography>
             </Box>
           )}
@@ -210,7 +211,7 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
               <Typography variant="subtitle1">Selected Files:</Typography>
               {uploadedFiles.slice(0, 3).map((file, idx) => (
                 <Typography key={idx} variant="body2">
-                  • {file.name}
+                  - {file.name}
                 </Typography>
               ))}
               {uploadedFiles.length > 3 && (
@@ -251,3 +252,4 @@ export default function UploadModalTrigger({ parentFolderId, onUploadSuccess }: 
     </>
   );
 }
+

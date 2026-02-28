@@ -41,13 +41,22 @@ const NewFolderButton: React.FC<NewFolderButtonProps> = ({ parentFolderId, onUpl
   
     return (
       <>
-        <Button variant="outlined" startIcon={<CreateNewFolderIcon />} onClick={handleOpen}>
+        <Button variant="outlined" startIcon={<CreateNewFolderIcon />} onClick={handleOpen} sx={{ minWidth: 120 }}>
           New Folder
         </Button>
   
         <Modal open={open} onClose={handleClose}>
           <Box display="flex" justifyContent="center" alignItems="center" sx={{ minHeight: '100vh' }}>
-            <Box sx={{ backgroundColor: 'white', padding: 3, borderRadius: 2, maxWidth: 400 }}>
+            <Box
+              sx={{
+                backgroundColor: 'white',
+                padding: 3,
+                borderRadius: 3,
+                maxWidth: 420,
+                width: '100%',
+                boxShadow: '0 16px 32px rgba(15, 23, 42, 0.18)',
+              }}
+            >
               <Typography variant="h6" gutterBottom>
                 Create New Folder
               </Typography>

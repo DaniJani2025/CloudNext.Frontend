@@ -61,7 +61,7 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
     return (
       <div key={folder.folderId}>
         <ListItemButton
-          sx={{ pl: 2 + depth * 2 }}
+          sx={{ pl: 2 + depth * 2, borderRadius: 2, my: 0.25 }}
           onClick={() => {
             setHasFetchedHome(false);
             if (folder.folderId) {
@@ -116,7 +116,17 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
 };
 
   return (
-    <Box sx={{ width: 250, borderRight: '1px solid #ccc', p: 2 }}>
+    <Box
+      sx={{
+        width: 260,
+        borderRight: '1px solid rgba(15, 106, 184, 0.16)',
+        bgcolor: 'rgba(255,255,255,0.62)',
+        backdropFilter: 'blur(8px)',
+        borderRadius: 3,
+        p: 1.5,
+        boxShadow: '0 8px 20px rgba(15, 23, 42, 0.06)',
+      }}
+    >
       <ListItemButton
         onClick={() => {
           if (!hasFetchedHome) {
@@ -125,7 +135,7 @@ const FolderSidebar: React.FC<FolderSidebarProps> = (props) => {
           }
           setHomeExpanded((prev) => !prev);
         }}
-        sx={{ p: 1 }}
+        sx={{ p: 1, borderRadius: 2, mb: 0.75 }}
       >
         <Home sx={{ mr: 1 }} />
 

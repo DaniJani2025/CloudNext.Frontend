@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TextField, Button, Typography, Alert } from '@mui/material';
+import { TextField, Button, Typography, Alert, Container, Paper, Box } from '@mui/material';
 import UserService from '../services/UserService';
 
 function RequestPasswordResetPage() {
@@ -25,16 +25,27 @@ function RequestPasswordResetPage() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '0 auto', marginTop: '100px' }}>
+    <Container maxWidth="sm" sx={{ py: { xs: 4, sm: 8 } }}>
+      <Paper
+        elevation={0}
+        sx={{
+          maxWidth: 480,
+          mx: 'auto',
+          p: { xs: 3, sm: 4 },
+          borderRadius: 4,
+          border: '1px solid rgba(15, 106, 184, 0.16)',
+          bgcolor: 'rgba(255,255,255,0.88)',
+        }}
+      >
       {submitted ? (
-        <>
+        <Box>
           <Typography variant="h6" color="success.main">
             A Reset Password link has been sent to your email.
           </Typography>
           <Typography variant="body2" sx={{ mt: 1 }}>
             Please check your inbox (and spam folder) for the password reset link.
           </Typography>
-        </>
+        </Box>
       ) : (
         <form onSubmit={handleSubmit}>
           <Typography variant="h5" gutterBottom>
@@ -62,13 +73,14 @@ function RequestPasswordResetPage() {
             variant="contained"
             color="primary"
             fullWidth
-            sx={{ mt: 2 }}
+            sx={{ mt: 2, py: 1.1 }}
           >
             Send Reset Link
           </Button>
         </form>
       )}
-    </div>
+      </Paper>
+    </Container>
   );
 }
 

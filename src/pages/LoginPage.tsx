@@ -68,14 +68,23 @@ const LoginPage = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 10 }}>
-      <Card elevation={6} sx={{ p: 3 }}>
+    <Container maxWidth="sm" sx={{ py: { xs: 4, sm: 8 } }}>
+      <Card
+        elevation={0}
+        sx={{
+          p: { xs: 1, sm: 2 },
+          borderRadius: 4,
+          border: '1px solid rgba(15, 106, 184, 0.16)',
+          backdropFilter: 'blur(8px)',
+          bgcolor: 'rgba(255,255,255,0.86)',
+        }}
+      >
         <CardContent>
           <Box display="flex" flexDirection="column" alignItems="center" textAlign="center">
             <Typography variant="h5" color="primary" gutterBottom>
               Sign in to CloudNext
             </Typography>
-            <Typography variant="h4" gutterBottom sx={{ mt: 1 }}>
+            <Typography variant="h4" gutterBottom sx={{ mt: 0.5 }}>
               Login
             </Typography>
 
@@ -133,7 +142,7 @@ const LoginPage = () => {
               fullWidth
               color="primary"
               onClick={handleLogin}
-              sx={{ mt: 3 }}
+              sx={{ mt: 3, py: 1.1 }}
             >
               Login
             </Button>
@@ -159,7 +168,7 @@ const LoginPage = () => {
                     style={{ width: 20, height: 20 }}
                   />
                 }
-                sx={{ textTransform: 'none' }}
+                sx={{ textTransform: 'none', borderRadius: 2 }}
               >
                 Continue with Google
               </Button>
@@ -175,7 +184,7 @@ const LoginPage = () => {
                     style={{ width: 20, height: 20 }}
                   />
                 }
-                sx={{ textTransform: 'none' }}
+                sx={{ textTransform: 'none', borderRadius: 2 }}
               >
                 Continue with Facebook
               </Button>
@@ -191,7 +200,7 @@ const LoginPage = () => {
                     style={{ width: 20, height: 20 }}
                   />
                 }
-                sx={{ textTransform: 'none' }}
+                sx={{ textTransform: 'none', borderRadius: 2 }}
               >
                 Continue with Apple
               </Button>

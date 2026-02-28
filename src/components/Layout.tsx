@@ -11,7 +11,7 @@ const Layout = () => {
   return (
     <div>
       {isLoggedIn && !isLoginOrRegisterPage && <TopRightMenu />}
-      <main>
+      <main style={{ padding: '20px 20px 24px 20px' }}>
         <Outlet />
       </main>
     </div>

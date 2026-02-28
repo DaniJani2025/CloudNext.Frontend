@@ -90,8 +90,17 @@ const RegistrationPage = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 10 }}>
-      <Card elevation={6} sx={{ p: 3 }}>
+    <Container maxWidth="sm" sx={{ py: { xs: 4, sm: 8 } }}>
+      <Card
+        elevation={0}
+        sx={{
+          p: { xs: 1, sm: 2 },
+          borderRadius: 4,
+          border: '1px solid rgba(15, 106, 184, 0.16)',
+          bgcolor: 'rgba(255,255,255,0.86)',
+          backdropFilter: 'blur(8px)',
+        }}
+      >
         <CardContent>
           <Box display="flex" flexDirection="column" alignItems="center" textAlign="center">
             <Typography variant="h5" color="primary" gutterBottom>
@@ -179,7 +188,7 @@ const RegistrationPage = () => {
               fullWidth
               color="primary"
               onClick={handleRegistration}
-              sx={{ mt: 3 }}
+              sx={{ mt: 3, py: 1.1 }}
             >
               Register
             </Button>

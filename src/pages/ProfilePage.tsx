@@ -15,12 +15,20 @@ export default function ProfilePage() {
       justifyContent="center"
       alignItems="center"
       minHeight="80vh"
-      bgcolor="#f4f6f8"
       p={2}
     >
-      <Card sx={{ minWidth: 350, padding: 3, borderRadius: 3, boxShadow: 3 }}>
+      <Card
+        sx={{
+          minWidth: 360,
+          padding: 3,
+          borderRadius: 4,
+          border: '1px solid rgba(15, 106, 184, 0.16)',
+          bgcolor: 'rgba(255,255,255,0.9)',
+          boxShadow: '0 16px 30px rgba(15, 23, 42, 0.08)',
+        }}
+      >
         <CardContent sx={{ textAlign: "center" }}>
-          <Avatar sx={{ width: 80, height: 80, margin: "0 auto", mb: 2 }}>
+          <Avatar sx={{ width: 84, height: 84, margin: "0 auto", mb: 2, bgcolor: '#0f6ab8' }}>
             {email?.[0]?.toUpperCase() || "U"}
           </Avatar>
           <Typography variant="h5" gutterBottom>

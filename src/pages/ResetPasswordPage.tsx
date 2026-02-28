@@ -80,7 +80,17 @@ const ResetPasswordPage: React.FC = () => {
   if (success) {
     return (
       <Container maxWidth="sm">
-        <Paper elevation={3} sx={{ p: 4, mt: 8, borderRadius: 4, textAlign: 'center' }}>
+        <Paper
+          elevation={0}
+          sx={{
+            p: 4,
+            mt: 6,
+            borderRadius: 4,
+            textAlign: 'center',
+            border: '1px solid rgba(15, 106, 184, 0.16)',
+            bgcolor: 'rgba(255,255,255,0.88)',
+          }}
+        >
           <Typography variant="h5" fontWeight="bold" gutterBottom>
             Password Reset Successful
           </Typography>
@@ -97,7 +107,16 @@ const ResetPasswordPage: React.FC = () => {
 
   return (
     <Container maxWidth="sm">
-      <Paper elevation={3} sx={{ p: 4, mt: 8, borderRadius: 4 }}>
+      <Paper
+        elevation={0}
+        sx={{
+          p: 4,
+          mt: 6,
+          borderRadius: 4,
+          border: '1px solid rgba(15, 106, 184, 0.16)',
+          bgcolor: 'rgba(255,255,255,0.88)',
+        }}
+      >
         <Typography
           variant="h5"
           textAlign="center"
