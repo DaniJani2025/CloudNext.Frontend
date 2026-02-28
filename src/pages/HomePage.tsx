@@ -10,6 +10,7 @@ import FileService from '../services/FileService';
 import FolderSidebar from '../components/FolderSidebar';
 import UploadModalTrigger from '../components/UploadModalTrigger';
 import NewFolderButton from '../components/NewFolderbutton';
+import TopRightMenu from '../components/TopRightMenu';
 import { UserFile, UserFolder } from '../types/types';
 import { previewableMimeTypes } from '../constants/constants';
 import React from 'react';
@@ -298,10 +299,11 @@ export default function HomePage() {
           </IconButton>
           <Typography variant="h5" ml={1}>Drive</Typography>
         </Box>
-        <Box display="flex" alignItems="center" gap={1.5} sx={{ mr: 8 }}>
+        <Box display="flex" alignItems="center" gap={1.5}>
           <UploadModalTrigger parentFolderId={folderHistory[folderHistory.length - 1]} onUploadSuccess={refreshData} />
           <NewFolderButton parentFolderId={folderHistory[folderHistory.length - 1]} onUploadSuccess={refreshData} />
           <Button variant="outlined" startIcon={<SortIcon />}>Sort</Button>
+          <TopRightMenu />
         </Box>
       </Box>
 

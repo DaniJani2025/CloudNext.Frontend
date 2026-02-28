@@ -43,7 +43,7 @@ const TopRightMenu = () => {
     };
 
     return (
-        <Box sx={{ position: 'fixed', top: 14, right: 16, zIndex: 1200 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title="Profile & settings">
                 <IconButton
                     onClick={handleMenuOpen}
