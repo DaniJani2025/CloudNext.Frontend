@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import {
   Button,
   Container,
@@ -67,6 +67,11 @@ const LoginPage = () => {
     }
   };
 
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void handleLogin();
+  };
+
   return (
     <Container maxWidth="sm" sx={{ py: { xs: 4, sm: 8 } }}>
       <Card
@@ -80,7 +85,15 @@ const LoginPage = () => {
         }}
       >
         <CardContent>
-          <Box display="flex" flexDirection="column" alignItems="center" textAlign="center">
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            autoComplete="off"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            textAlign="center"
+          >
             <Typography variant="h5" color="primary" gutterBottom>
               Sign in to CloudNext
             </Typography>
@@ -95,6 +108,10 @@ const LoginPage = () => {
             )}
 
             <TextField
+              id="email"
+              name="username"
+              type="email"
+              autoComplete="username"
               label="Email"
               variant="outlined"
               fullWidth
@@ -107,7 +124,9 @@ const LoginPage = () => {
               <InputLabel htmlFor="password">Password</InputLabel>
               <OutlinedInput
                 id="password"
-                type="text"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 endAdornment={
@@ -118,11 +137,6 @@ const LoginPage = () => {
                   </InputAdornment>
                 }
                 label="Password"
-                sx={{
-                  '& input': {
-                    WebkitTextSecurity: showPassword ? 'none' : 'disc',
-                  },
-                }}
               />
             </FormControl>
 
@@ -141,7 +155,7 @@ const LoginPage = () => {
               variant="contained"
               fullWidth
               color="primary"
-              onClick={handleLogin}
+              type="submit"
               sx={{ mt: 3, py: 1.1 }}
             >
               Login
