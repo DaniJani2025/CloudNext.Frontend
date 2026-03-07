@@ -36,9 +36,6 @@ build/
 .env.test.local
 .env.production.local
 
-# Vite local config
-vite.config.local.ts
-
 # System files
 .DS_Store
 Thumbs.db

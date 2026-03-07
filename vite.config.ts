@@ -6,19 +6,19 @@ import type { ConfigEnv } from "vite";
 export default ({ mode }: ConfigEnv) => {
   const env = loadEnv(mode, process.cwd());
 
+  const https =
+    env.VITE_USE_HTTPS === "true"
+      ? {
+          key: fs.readFileSync(env.VITE_HTTPS_KEY_PATH),
+          cert: fs.readFileSync(env.VITE_HTTPS_CERT_PATH)
+        }
+      : undefined;
+
   return defineConfig({
-    base: "/", // change if deploying under subpath
     plugins: [react()],
     server: {
-      host: true,
-      https: {
-        key: fs.readFileSync(env.VITE_HTTPS_KEY_PATH),
-        cert: fs.readFileSync(env.VITE_HTTPS_CERT_PATH),
-      },
-    },
-    build: {
-      outDir: "E:/Projects/CloudNext/CloudNext.Frontend",
-      emptyOutDir: true
-    },
+      host: mode === "lan" ? true : "localhost",
+      https
+    }
   });
 };
